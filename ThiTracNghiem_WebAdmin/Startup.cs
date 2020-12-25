@@ -24,6 +24,16 @@ namespace ThiTracNghiem_WebAdmin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            IMvcBuilder builder = services.AddRazorPages();
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+#if DEBUG
+            if (environment == Environments.Development)
+            {
+                builder.AddRazorRuntimeCompilation();
+            }
+#endif
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
