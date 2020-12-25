@@ -1,0 +1,85 @@
+﻿@using Microsoft.AspNetCore.Http.Extensions
+@{
+    var url = @Context.Request.GetDisplayUrl();
+    string[] arrListUrl = url.Split('/');
+}
+<div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="sidebar-search"></li>
+            <li>
+                <a asp-action="index" asp-controller="home"
+                   class="@((arrListUrl[3]=="dashboard"||arrListUrl[3]=="")?"active":"")">
+                    <i class="fa fa-dashboard fa-fw"></i> Dashboard
+                </a>
+            </li>
+
+            <li class="@((arrListUrl[3]=="accounts"||arrListUrl[3]=="roles")?"active":"")">
+                <a href="#" class="@((arrListUrl[3]=="accounts"||arrListUrl[3]=="roles")?"active":"")">
+                    <i class="fa fa-user-md"></i> Tài khoản<span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a asp-action="accounts" asp-controller="user"
+                           class="@((arrListUrl[3]=="accounts")?"active":"")">
+                            <i class="fa fa-user"></i> Quản lý tài khoản
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-action="roles" asp-controller="user"
+                           class="@((arrListUrl[3]=="roles")?"active":"")">
+                            <i class="fa fa-group"></i> Quản lý quyền hạn
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="@((arrListUrl[3]=="exams"||arrListUrl[3]=="modules")?"active":"")">
+                <a href="#" class="@((arrListUrl[3]=="exams"||arrListUrl[3]=="modules")?"active":"")">
+                    <i class="fa fa-align-justify"></i> Đề thi<span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a asp-action="index" asp-controller="exam"
+                           class="@((arrListUrl[3]=="exams")?"active":"")">
+                            <i class="fa fa-newspaper-o"></i> Quản lý đề thi
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-action="modules" asp-controller="exam"
+                           class="@((arrListUrl[3]=="models")?"active":"")">
+                            <i class="fa fa-archive"></i> Quản lý Modules
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a asp-action="index" asp-controller="question"
+                   class="@((arrListUrl[3]=="questions")?"active":"")">
+                    <i class="fa fa-question"></i> Quản lý câu hỏi
+                </a>
+            </li>
+
+            <li class="@((arrListUrl[3]=="categories"|| arrListUrl[3]=="posts")?"active":"")">
+                <a href="#" class="@((arrListUrl[3]=="categories"|| arrListUrl[3]=="posts")?"active":"")">
+                    <i class="fa fa-paragraph"></i> Bài viết<span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a asp-action="posts" asp-controller="blog"
+                           class="@((arrListUrl[3]=="posts")?"active":"")">
+                            <i class="fa fa-eyedropper"></i> Quản lý bài viết
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-action="categories" asp-controller="blog"
+                           class="@((arrListUrl[3]=="categories")?"active":"")">
+                            <i class="fa fa-calendar-check-o"></i> Quản lý danh mục
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

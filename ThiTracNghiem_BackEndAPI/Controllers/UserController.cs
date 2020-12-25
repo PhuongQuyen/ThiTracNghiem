@@ -25,7 +25,6 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate([FromBody] LoginRequest request)
         {
-
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var resultToken = await _userService.Authencate(request);
             if (string.IsNullOrEmpty(resultToken.ResultObject))
