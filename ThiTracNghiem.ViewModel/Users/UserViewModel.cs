@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace ThiTracNghiem_BackEndAPI.Models
+namespace ThiTracNghiem_ViewModel.Users
 {
-    public class Users
+    public class UserViewModel
     {
-        public Users()
-        {
-            Posts = new HashSet<Posts>();
-            Scores = new HashSet<Scores>();
-        }
-
         public int Id { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
@@ -23,9 +18,5 @@ namespace ThiTracNghiem_BackEndAPI.Models
         public int RoleId { get; set; }
         public DateTime JoinDate { get; set; }
         public byte Active { get; set; }
-
-        public virtual Roles Role { get; set; }
-        public virtual ICollection<Posts> Posts { get; set; }
-        public virtual ICollection<Scores> Scores { get; set; }
     }
 }
