@@ -4,45 +4,52 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ThiTracNghiem_WebAdmin</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <!-- Bootstrap Core CSS -->
+    <link href="~/admin-assets/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- MetisMenu CSS -->
+    <link href="~/admin-assets/css/metisMenu.min.css" rel="stylesheet" />
+    <link href="~/admin-assets/css/startmin.css" rel="stylesheet" />
+    <!-- Custom Fonts -->
+    <link href="~/admin-assets/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- DataTables CSS -->
+    <link href="~/admin-assets/css/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
+    <!-- DataTables Responsive CSS -->
+    <link href="~/admin-assets/css/dataTables/dataTables.responsive.css" rel="stylesheet" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+
+    @RenderSection("Header", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ThiTracNghiem_WebAdmin</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+    <div id="wrapper">
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <partial name="_Navbar.cshtml">
+                <partial name="_LeftSidebar.cshtml">
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+            <!-- /.container-fluid -->
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2020 - ThiTracNghiem_WebAdmin - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- jQuery library -->
+    <script src="~/lib/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/admin-assets/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/admin-assets/js/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/admin-assets/js/startmin.js"></script>
+
+    <script src="~/admin-assets/js/jquery.validate.js"></script>
+
+    <script src="~/admin-assets/js/bootbox.all.min.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="~/admin-assets/js/dataTables/jquery.dataTables.min.js"></script>
+    <script src="~/admin-assets/js/dataTables/dataTables.bootstrap.min.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
