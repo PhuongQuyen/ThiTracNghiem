@@ -17,6 +17,13 @@ namespace ThiTracNghiem_WebAdmin.Controllers
         {
             return View();
         }
-
+        public IActionResult SinglePost()
+        {
+            return View();
+        }
+         public IActionResult WritePost()
+        {
+            return View();
+        }
     }
 }

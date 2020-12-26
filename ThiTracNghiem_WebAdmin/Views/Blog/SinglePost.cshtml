@@ -1,10 +1,10 @@
 ﻿@section Header{
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" type="text/css">
-}
-<link rel="stylesheet" href="{!! asset('public') !!}/trumbowyg/dist/ui/trumbowyg.min.css">
-<!-- Import color plugin specific stylesheet -->
-<link rel="stylesheet" href="{!! asset('public') !!}/trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.css">
+    <!-- Import color plugin specific stylesheet -->
+    <link href="~/admin-assets/trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.css" rel="stylesheet" />
 
+    <link href="~/admin-assets/trumbowyg/dist/ui/trumbowyg.min.css" rel="stylesheet" />
+}
 <form method="POST" id="postForm">
     <div class="row">
         <div class="col-lg-12">
@@ -47,8 +47,10 @@
                                     <option value="7" #>
                                         7 - Hướng dẫn
                                     </option>
-                                    <option value="8" 
-                                            #>8 - Tin tức</option>
+                                    <option value="8"
+                                            #>
+                                        8 - Tin tức
+                                    </option>
                                     <option value="9" #>9 - Kiến thức tổng hợp</option>
                                 </select>
                             </p>
@@ -82,65 +84,61 @@
         </div>
     </div>
 </form>
-@section Scripts{ 
-<script>
-    $(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
         });
-    });
 
-    $('#btn-save').click(function () {
-        let formData = $('#postForm').serialize();
-        if ($('#post-title').val() === '' || $('#post-content').val() === '') {
-            alert('Tiêu đề và nội dung không được để trống!');
-            return;
-        }
-        $.ajax({
-            data: formData,
-            url: '{!! route('editPost') !!}',
-            type: 'post',
-            dataType: 'json',
-            success: function (data) {
-                var noti = bootbox.dialog({
-                    message: '<h3><i class="fa fa-spin fa-spinner"></i> ' + data.message + '</h3>'
-                });
-                noti.init(function () {
-                    setTimeout(function () {
-                        noti.fadeOut();
-                    }, 500);
-                });
-            },
-            error: function (data) {
-                alert('Lỗi: ' +
-                    '- Có thể tên bài viết bị trùng');
-                console.log('Error: ', data);
+        $('#btn-save').click(function () {
+            let formData = $('#postForm').serialize();
+            if ($('#post-title').val() === '' || $('#post-content').val() === '') {
+                alert('Tiêu đề và nội dung không được để trống!');
+                return;
             }
+            $.ajax({
+                data: formData,
+                url: '{!! route('editPost') !!}',
+                type: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    var noti = bootbox.dialog({
+                        message: '<h3><i class="fa fa-spin fa-spinner"></i> ' + data.message + '</h3>'
+                    });
+                    noti.init(function () {
+                        setTimeout(function () {
+                            noti.fadeOut();
+                        }, 500);
+                    });
+                },
+                error: function (data) {
+                    alert('Lỗi: ' +
+                        '- Có thể tên bài viết bị trùng');
+                    console.log('Error: ', data);
+                }
+            });
         });
-    });
-</script>
-<script src="~/admin-assets/trumbowyg/dist/trumbowyg.js"></script>
-<script src="~/admin-assets/trumbowyg/dist/plugins/resizimg/jquery-resizable.min.js"></script>
-<script src="~/admin-assets/trumbowyg/dist/plugins/upload/trumbowyg.upload.js"></script>
-<script src="~/admin-assets/trumbowyg/dist/plugins/base64/trumbowyg.base64.js"></script>
-<script src="~/admin-assets/trumbowyg/dist/plugins/colors/trumbowyg.colors.js"></script>
-<script src="~/admin-assets/trumbowyg/dist/plugins/resizimg/trumbowyg.resizimg.js"></script>
-<script src="~/admin-assets/trumbowyg/dist/plugins/history/trumbowyg.history.js"></script>
-<script src="~/admin-assets/trumbowyg/js/langs/vi.js"></script>
-<script>
-    $(document).ready(function () {
-        $.trumbowyg.svgPath = '{!! asset('public') !!}/trumbowyg/dist/ui/icons.svg';
-    });
-</script>
-}
-<script src="~/admin-assets/trumbowyg/js/main.js"></script>
+    </script>
+    <script src="~/admin-assets/trumbowyg/dist/trumbowyg.min.js"></script>
+    <script src="~/admin-assets/trumbowyg/dist/plugins/resizimg/jquery-resizable.min.js"></script>
+    <script src="~/admin-assets/trumbowyg/dist/plugins/upload/trumbowyg.upload.min.js"></script>
+    <script src="~/admin-assets/trumbowyg/dist/plugins/base64/trumbowyg.base64.js"></script>
+    <script src="~/admin-assets/trumbowyg/dist/plugins/colors/trumbowyg.colors.js"></script>
+    <script src="~/admin-assets/trumbowyg/dist/plugins/resizimg/trumbowyg.resizimg.js"></script>
+    <script src="~/admin-assets/trumbowyg/dist/plugins/history/trumbowyg.history.js"></script>
+    <script src="~/admin-assets/trumbowyg/js/langs/vi.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.trumbowyg.svgPath = '~/admin-assets/trumbowyg/dist/ui/icons.svg';
+        });
+    </script>
 
-<!-- Init Trumbowyg -->
-<script>
-    $(document).ready(function () {
-        $.trumbowyg.svgPath = '{!! asset('public') !!}/trumbowyg/dist/ui/icons.svg';
-    });
-</script>
+    <script src="~/admin-assets/trumbowyg/js/main.js"></script>
+
+    <!-- Init Trumbowyg -->
+
 }
