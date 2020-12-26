@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ThiTracNghiem_BackEndAPI.Services.UserServices;
+using ThiTracNghiem_ViewModel.Commons;
 using ThiTracNghiem_ViewModel.Users;
 
 namespace ThiTracNghiem_BackEndAPI.Controllers
@@ -34,8 +33,8 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
             return Ok(resultToken);
         }
 
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> Update( int userId)
+        [HttpGet("GetById/{userId}")]
+        public async Task<IActionResult> GetById( int userId)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _userService.GetById(userId);
@@ -51,15 +50,15 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
 
         }
 
-        [HttpPut("{userId}")]
-        public async Task<IActionResult> Update([FromBody] RegisterRequest request,int userId)
+        [HttpPost("update/{userId}")]
+        public async Task<IActionResult> Update([FromForm] RegisterRequest request,int userId)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _userService.Update(request, userId);
             return Ok(result);
         }
 
-        [HttpDelete("{userId}")]
+        [HttpGet("delete/{userId}")]
         public async Task<IActionResult> Delete([FromRoute] int userId)
         {
             var result = await _userService.Delete(userId);
@@ -70,17 +69,21 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
         [HttpGet("getListUser")]
         public async Task<IActionResult> GetListUser()
         {
+            var start = Request.Query["start"].FirstOrDefault();
+            var length = Request.Query["length"].FirstOrDefault();
+            DatatableRequestBase requestBase = new DatatableRequestBase()
+            {
+                Draw = Request.Query["draw"].FirstOrDefault(),
+                Skip = start != null ? Convert.ToInt32(start) : 0,
+                PageSize = length != null ? Convert.ToInt32(length) : 0,
+                sortColumn = Request.Query["order[0][column]"].FirstOrDefault(),
+                sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault(),
+                searchValue = Request.Query["search[value]"].FirstOrDefault()
+            };
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _userService.GetListUser();
+            var result = await _userService.GetListUser(requestBase);
             return Ok(result);
         }
-
-        [HttpGet("getListRole")]
-        public async Task<IActionResult> GetListRole()
-        {
-            var result = await _userService.GetListRole();
-            return Ok(result);
-        }
-
     }
 }

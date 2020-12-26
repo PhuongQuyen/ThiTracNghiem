@@ -53,21 +53,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in users)
-                            {
-                                <tr role="row" class="odd">
-                                    <td class="sorting_1">@item.Id</td>
-                                    <td>@item.Email</td>
-                                    <td>@item.FirstName</td>
-                                    <td>@item.LastName</td>
-                                    <td>@item.RoleTitle</td>
-                                    <td>@item.JoinDate</td>
-                                    <td>
-                                        <a href="javascript:void(0)" data-id="@item.Id" data-toggle="tooltip" id="edit" data-id="1" data-original-title="Edit" class="btn btn-xs btn-warning btn-edit"><i class="glyphicon glyphicon-edit"></i> Sửa</a>
-                                        <a href="javascript:void(0)" data-id="@item.Id" data-toggle="tooltip" id="delete" data-id="1" data-original-title="Delete" class="btn btn-xs btn-danger btn-delete"><i class="glyphicon glyphicon-trash"></i> Xóa</a>
-                                    </td>
-                                </tr>
-                            }
                         </tbody>
                     </table>
                 </div>
@@ -170,104 +155,132 @@
 
 @section Scripts{
     <script>
-    var token = '@token';
-    // Create new account button
-    $('#create-new-account').click(function () {
-        $('#default-password').show();
-        $('#account_id').val('');
-        $('#accountForm').trigger("reset");
-        $('#account-modal-title').html("Thêm tài khoản mới");
-        $('#account-modal').modal('show');
-        $('#accountForm').attr({
-            action: "https://localhost:5001/api/user/register",
-            method: "POST"
-        });
-    });
+        var token = '@token';
 
-    $('body').on('click', '#edit', function () {
-        let accountID = $(this).data("id");
-        $('#default-password').hide();
-        $('#account-modal').modal('show');
-        $('#accountForm').attr({
-            action: "https://localhost:5001/api/user/update/" + accountID,
-            method: "PUT"
+        $(document).ready(function () {
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                },
+            });
+            $('#accounts-table').DataTable({
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url:"https://localhost:5001/api/user/getListUser",
+                    type: 'GET',
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'email' },
+                    { data: 'lastName' },
+                    { data: 'firstName' },
+                    { data: 'roleId' },
+                    { data: 'joinDate' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
+                ],
+            });
         });
-        $('#account-modal-title').html("Sửa thông tin tài khoản");
-        $('#account_id').val(accountID);
-
-        $.ajax({
-            type: "get",
-            url: "https://localhost:5001/api/user/getById?id=" + accountID,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-            },
-            success: function (data) {
-                $('#account-email').val(data.email);
-                $('#account-lname').val(data.lastName);
-                $('#account-fname').val(data.firstName);
-                $('#account-role').val(data.role_id);
-                $('#account-gender').val(data.gender);
-                $('#account-wplace').val(data.workPlace);
-                $('#account-phone').val(data.phoneNumber);
-                $('#account-address').val(data.address);
-            },
-            error: function (data) {
-                console.log('Error: ', data);
-            }
+        // Create new account button
+        $('#create-new-account').click(function () {
+            $('#default-password').show();
+            $('#account_id').val('');
+            $('#accountForm').trigger("reset");
+            $('#account-modal-title').html("Thêm tài khoản mới");
+            $('#account-modal').modal('show');
+            $('#accountForm').attr({
+                action: "https://localhost:5001/api/user/register",
+                method: "POST"
+            });
         });
-    });
 
-    //Delete button
-    $('body').on('click', '#delete', function () {
-        let accountID = $(this).data("id");
-        if (confirm('Bạn có chắc muốn xóa tài khoản ' + accountID + ' ?') === true)
+        $('body').on('click', '#edit', function () {
+            let accountID = $(this).attr("data-id");
+            //console.log(accountID);
+            $('#default-password').hide();
+            $('#account-modal').modal('show');
+            $('#accountForm').attr({
+                action: "https://localhost:5001/api/user/update/" + accountID,
+                method: "POST"
+            });
+            $('#account-modal-title').html("Sửa thông tin tài khoản");
+            $('#account_id').val(accountID);
+
             $.ajax({
                 type: "get",
-                url: "https://localhost:5001/api/user/delete/" + accountID,
+                url: "https://localhost:5001/api/user/getById/" + accountID,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 },
                 success: function (data) {
-                    let oTable = $('#accounts-table').dataTable();
-                    oTable.fnDraw(false);
+                    $('#account-email').val(data.resultObject.email);
+                    $('#account-lname').val(data.resultObject.lastName);
+                    $('#account-fname').val(data.resultObject.firstName);
+                    $('#account-role').val(data.resultObject.roleId);
+                    $('#account-gender').val(data.resultObject.gender);
+                    $('#account-wplace').val(data.resultObject.workPlace);
+                    $('#account-phone').val(data.resultObject.phoneNumber);
+                    $('#account-address').val(data.resultObject.address);
                 },
                 error: function (data) {
                     console.log('Error: ', data);
                 }
             });
-    });
+        });
 
-    // Save button
-    $('#accountForm').validate({
-        submitHandler: function (form) {
-            $('#btn-save').html('Loading..');
-            var url = $("#accountForm").attr("action");
-            $.ajax({
-                data: $('#accountForm').serialize(),
-                type: "post",
-                url: url,
-                dataType: 'json',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-                },
-                success: function (data) {
-                    if (!data.isSuccessed) {
-                        alert(data.message);
-                        $('#btn-save').html('Lưu');
-                    } else {
-                        $('#accountForm').trigger('reset');
-                        $('#account-modal').modal('hide');
-                        $('#btn-save').html('Lưu');
-                        window.location = "/account";
+        //Delete button
+        $('body').on('click', '#delete', function () {
+            let accountID = $(this).attr("data-id");
+            if (confirm('Bạn có chắc muốn xóa tài khoản ' + accountID + ' ?') === true)
+                $.ajax({
+                    type: "get",
+                    url: "https://localhost:5001/api/user/delete/" + accountID,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    },
+                    success: function (data) {                      
+                        let oTable = $('#accounts-table').dataTable();
+                        oTable.fnDraw(false);
+                    },
+                    error: function (data) {
+                        console.log('Error: ', data);
                     }
-                },
-                error: function (data) {
-                    console.log('Error: ', data);
-                    $('#btn-save').html('Lưu');
-                }
-            });
-        }
-    });
+                });
+        });
+
+        // Save button
+        $('#accountForm').validate({
+            submitHandler: function (form) {
+                $('#btn-save').html('Loading..');
+                var url = $("#accountForm").attr("action");
+                $.ajax({
+                    data: $('#accountForm').serialize(),
+                    type: "post",
+                    url: url,
+                    dataType: 'json',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    },
+                    success: function (data) {
+                        if (!data.isSuccessed) {
+                            alert(data.message);
+                            $('#btn-save').html('Lưu');
+                        } else {
+                            $('#accountForm').trigger('reset');
+                            $('#account-modal').modal('hide');
+                            $('#btn-save').html('Lưu');
+                            let oTable = $('#accounts-table').dataTable();
+                            oTable.fnDraw(false);
+                        }
+                    },
+                    error: function (data) {
+                        console.log('Error: ', data);
+                        $('#btn-save').html('Lưu');
+                    }
+                });
+            }
+        });
     </script>
     <script src="~/admin-assets/js/dataTables/jquery.dataTables.min.js"></script>
     <script src="~/admin-assets/js/dataTables/dataTables.bootstrap.min.js"></script>

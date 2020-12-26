@@ -66,7 +66,10 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
         public async Task<ApiResult<UserViewModel>> GetById(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
-
+            if(user == null)
+            {
+                return new ApiResultErrors<UserViewModel>("not found");
+            }
             var userViewModel = new UserViewModel()
             {
                 Email = user.Email,
@@ -76,6 +79,8 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
                 LastName = user.LastName,
                 JoinDate = user.JoinDate,
                 Id = user.Id,
+                WorkPlace = user.WorkPlace,
+                Gender = user.Gender,
                 RoleId = user.RoleId
             };
             return new ApiResultSuccess<UserViewModel>(userViewModel);
@@ -86,25 +91,47 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             throw new NotImplementedException();
         }
 
-        public async Task<ApiResult<List<RoleViewModel>>> GetListRole()
-        {
-            var query = from r in _context.Roles
-                        select r;
-            var data = await query
-                  .Select(r => new RoleViewModel()
-                  {
-                    Id = r.Id
-                  }).ToListAsync();
-
-            return new ApiResultSuccess<List<RoleViewModel>>(data);
-        }
-
-        public async Task<ApiResult<List<UserViewModel>>> GetListUser()
+        public async Task<DatatableResult<List<UserViewModel>>> GetListUser(DatatableRequestBase request)
         {
             var query = from u in _context.Users
                         join r in _context.Roles on u.RoleId equals r.Id
                         select new { r, u };
-            var data = await query
+
+            if (!String.IsNullOrEmpty(request.searchValue))
+            {
+                query = query.Where(x => x.u.Email.Contains(request.searchValue));
+            }
+
+            int totalRow = await query.CountAsync();
+
+            if (request.sortColumnDirection == "desc")
+            {
+                switch (request.sortColumn)
+                {
+                    case "0": query = query.OrderByDescending(r => r.u.Id); break;
+                    case "1": query = query.OrderByDescending(r => r.u.Email); break;
+                    case "2": query = query.OrderByDescending(r => r.u.FirstName); break;
+                    case "3": query = query.OrderByDescending(r => r.u.LastName); break;
+                    case "4": query = query.OrderByDescending(r => r.u.RoleId); break;
+                    case "5": query = query.OrderByDescending(r => r.u.JoinDate); break;
+                }
+                
+            }
+            else if (request.sortColumnDirection == "asc")
+            {
+                switch (request.sortColumn)
+                {
+                    case "0": query = query.OrderBy(r => r.u.Id); break;
+                    case "1": query = query.OrderBy(r => r.u.Email); break;
+                    case "2": query = query.OrderBy(r => r.u.FirstName); break;
+                    case "3": query = query.OrderBy(r => r.u.LastName); break;
+                    case "4": query = query.OrderBy(r => r.u.RoleId); break;
+                    case "5": query = query.OrderBy(r => r.u.JoinDate); break;
+                }
+
+            }
+
+            var data = await query.Skip(request.Skip).Take(request.PageSize)
                   .Select(x => new UserViewModel()
                   {
                       Email = x.u.Email,
@@ -113,10 +140,20 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
                       Address = x.u.Address,
                       LastName = x.u.LastName,
                       JoinDate = x.u.JoinDate,
+                      Gender = x.u.Gender,
                       Id = x.u.Id,
-                      RoleTitle = x.r.RoleTitle
+                      RoleTitle = x.r.RoleTitle,
+                      Action = String.Format("<a href = 'javascript:void(0)' data-toggle = 'tooltip' id = 'edit' data-id = '{0}' data-original-title='Edit' class='btn mr-5 btn-xs btn-warning btn-edit'><i class='glyphicon glyphicon-edit'></i> Sửa</a><a href = 'javascript:void(0)' data-toggle='tooltip' id='delete' data-id='{1}' data-original-title='Delete' class='btn btn-xs btn-danger btn-delete'><i class='glyphicon glyphicon-trash'></i> Xóa</a>", x.u.Id, x.u.Id)
                   }).ToListAsync();
-            return new ApiResultSuccess<List<UserViewModel>>(data);
+
+            var result = new DatatableResult<List<UserViewModel>>()
+            {
+                recordsTotal = totalRow,
+                recordsFiltered = totalRow,
+                Draw = request.Draw,
+                Data = data
+            };
+            return result;
         }
 
         public Task<ApiResult<string>> GetPasswordResetToken(string email)
@@ -163,14 +200,15 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
         public async Task<ApiResult<bool>> Update(RegisterRequest request, int userId)
         {
             var user = await _context.Users.FindAsync(userId);
-            if (user != null)
+            var role = await _context.Roles.FindAsync(request.RoleId);
+            if (user == null)
             {
                 return new ApiResultErrors<bool>("Not found");
             }
-
+            user.Email = request.Email;
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
-            user.RoleId = request.RoleId;
+            user.Role= role;
             user.Gender = request.Gender;
             user.WorkPlace = request.WorkPlace;
             user.PhoneNumber = request.PhoneNumber;

@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using ThiTracNghiem_BackEndAPI.Models;
+using ThiTracNghiem_BackEndAPI.Services.RoleServices;
 using ThiTracNghiem_BackEndAPI.Services.UserServices;
 
 namespace ThiTracNghiem_BackEndAPI
@@ -35,6 +36,7 @@ namespace ThiTracNghiem_BackEndAPI
             services.AddDbContext<tracnghiemContext>(options => options.UseMySQL(Configuration.GetConnectionString("DbConnectionString")));
 
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRoleService, RoleService>();
 
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

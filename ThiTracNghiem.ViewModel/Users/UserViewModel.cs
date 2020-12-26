@@ -18,5 +18,6 @@ namespace ThiTracNghiem_ViewModel.Users
         public int RoleId { get; set; }
         public string RoleTitle { get; set; }
         public DateTime JoinDate { get; set; }
+        public string Action { get; set; }
     }
 }
