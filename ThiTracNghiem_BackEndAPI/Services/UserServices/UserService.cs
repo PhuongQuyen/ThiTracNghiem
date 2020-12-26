@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ThiTracNghiem_BackEndAPI.Models;
 using ThiTracNghiem_ViewModel.Commons;
+using ThiTracNghiem_ViewModel.Roles;
 using ThiTracNghiem_ViewModel.Users;
 
 namespace ThiTracNghiem_BackEndAPI.Services.UserServices
@@ -62,14 +63,60 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             throw new NotImplementedException();
         }
 
-        public Task<ApiResult<UserViewModel>> GetById(Guid userId)
+        public async Task<ApiResult<UserViewModel>> GetById(int userId)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users.FindAsync(userId);
+
+            var userViewModel = new UserViewModel()
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
+                LastName = user.LastName,
+                JoinDate = user.JoinDate,
+                Id = user.Id,
+                RoleId = user.RoleId
+            };
+            return new ApiResultSuccess<UserViewModel>(userViewModel);
         }
 
         public Task<ApiResult<UserViewModel>> GetByUserName(string userName)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ApiResult<List<RoleViewModel>>> GetListRole()
+        {
+            var query = from r in _context.Roles
+                        select r;
+            var data = await query
+                  .Select(r => new RoleViewModel()
+                  {
+                    Id = r.Id
+                  }).ToListAsync();
+
+            return new ApiResultSuccess<List<RoleViewModel>>(data);
+        }
+
+        public async Task<ApiResult<List<UserViewModel>>> GetListUser()
+        {
+            var query = from u in _context.Users
+                        join r in _context.Roles on u.RoleId equals r.Id
+                        select new { r, u };
+            var data = await query
+                  .Select(x => new UserViewModel()
+                  {
+                      Email = x.u.Email,
+                      FirstName = x.u.FirstName,
+                      PhoneNumber = x.u.PhoneNumber,
+                      Address = x.u.Address,
+                      LastName = x.u.LastName,
+                      JoinDate = x.u.JoinDate,
+                      Id = x.u.Id,
+                      RoleTitle = x.r.RoleTitle
+                  }).ToListAsync();
+            return new ApiResultSuccess<List<UserViewModel>>(data);
         }
 
         public Task<ApiResult<string>> GetPasswordResetToken(string email)
@@ -88,7 +135,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             var user = new Users()
             {
                 Email = request.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                Password = BCrypt.Net.BCrypt.HashPassword("123456"),
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 WorkPlace = request.WorkPlace,
@@ -111,6 +158,33 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
                 return  new ApiResultErrors<string>("Faild");
             }
 
+        }
+
+        public async Task<ApiResult<bool>> Update(RegisterRequest request, int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                return new ApiResultErrors<bool>("Not found");
+            }
+
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.RoleId = request.RoleId;
+            user.Gender = request.Gender;
+            user.WorkPlace = request.WorkPlace;
+            user.PhoneNumber = request.PhoneNumber;
+            user.Address = request.Address;
+
+            var numRowChange = await _context.SaveChangesAsync();
+            if (numRowChange > 0)
+            {
+                return new ApiResultSuccess<bool>();
+            }
+            else
+            {
+                return new ApiResultErrors<bool>("Faild");
+            }
         }
 
         private string GenerateJwtToken(UserViewModel user)

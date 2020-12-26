@@ -10,6 +10,8 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Text;
 using ThiTracNghiem_WebAdmin.Commons;
+using System.Collections.Generic;
+using ThiTracNghiem_ViewModel.Roles;
 
 namespace ThiTracNghiem_WebAdmin.Services.Users
 
@@ -70,6 +72,75 @@ namespace ThiTracNghiem_WebAdmin.Services.Users
         public Task<ApiResult<UserViewModel>> GetUserByUserName(string userName)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ApiResult<List<UserViewModel>>> getListUser()
+        {
+            var sections = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sections);
+            var response = await _client.GetAsync("/api/user/getListUser");
+            using (HttpContent content = response.Content)
+            {
+                //convert data content to string using await
+                var data = await content.ReadAsStringAsync();
+
+                //If the data is not null, parse(deserialize) the data to a C# object
+                if (data != null)
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return JsonConvert.DeserializeObject<ApiResult<List<UserViewModel>>>(data);
+                    }
+                    return JsonConvert.DeserializeObject<ApiResult<List<UserViewModel>>>(data);
+
+                }
+                else
+                {
+                    return JsonConvert.DeserializeObject<ApiResult<List<UserViewModel>>>(null);
+                }
+            }
+        }
+
+        public async Task<ApiResult<List<RoleViewModel>>> getListRole()
+        {
+            var sections = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sections);
+            var response = await _client.GetAsync("/api/user/getListRole");
+            using (HttpContent content = response.Content)
+            {
+                //convert data content to string using await
+                var data = await content.ReadAsStringAsync();
+
+                //If the data is not null, parse(deserialize) the data to a C# object
+                if (data != null)
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return JsonConvert.DeserializeObject<ApiResult<List<RoleViewModel>>>(data);
+                    }
+                    return JsonConvert.DeserializeObject<ApiResult<List<RoleViewModel>>>(data);
+
+                }
+                else
+                {
+                    return JsonConvert.DeserializeObject<ApiResult<List<RoleViewModel>>>(null);
+                }
+            }
+        }
+
+        public async Task<ApiResult<bool>> Update(RegisterRequest request, int userId)
+        {
+            var sections = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sections);
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _client.PutAsync("/api/user/update?userId=" + userId, httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<ApiResult<bool>>(result);
+            }
+            return JsonConvert.DeserializeObject<ApiResult<bool>>(result);
         }
     }
 }
