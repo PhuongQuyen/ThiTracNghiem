@@ -20,13 +20,13 @@
                 </a>
                 <ul class="nav nav-second-level">
                     <li>
-                        <a asp-action="accounts" asp-controller="user"
+                        <a asp-action="index" asp-controller="account"
                            class="@((arrListUrl[3]=="accounts")?"active":"")">
                             <i class="fa fa-user"></i> Quản lý tài khoản
                         </a>
                     </li>
                     <li>
-                        <a asp-action="roles" asp-controller="user"
+                        <a asp-action="roles" asp-controller="account"
                            class="@((arrListUrl[3]=="roles")?"active":"")">
                             <i class="fa fa-group"></i> Quản lý quyền hạn
                         </a>
@@ -40,7 +40,7 @@
                 </a>
                 <ul class="nav nav-second-level">
                     <li>
-                        <a asp-action="index" asp-controller="exam"
+                        <a asp-action="exams" asp-controller="exam"
                            class="@((arrListUrl[3]=="exams")?"active":"")">
                             <i class="fa fa-newspaper-o"></i> Quản lý đề thi
                         </a>
@@ -55,7 +55,7 @@
             </li>
 
             <li>
-                <a asp-action="index" asp-controller="question"
+                <a asp-action="questions" asp-controller="question"
                    class="@((arrListUrl[3]=="questions")?"active":"")">
                     <i class="fa fa-question"></i> Quản lý câu hỏi
                 </a>

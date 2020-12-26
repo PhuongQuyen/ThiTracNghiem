@@ -16,7 +16,7 @@ namespace ThiTracNghiem_ViewModel.Users
         public string Address { get; set; }
         public int? Gender { get; set; }
         public int RoleId { get; set; }
+        public string RoleTitle { get; set; }
         public DateTime JoinDate { get; set; }
-        public byte Active { get; set; }
     }
 }
