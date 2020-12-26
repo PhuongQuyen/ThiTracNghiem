@@ -57,7 +57,7 @@ namespace ThiTracNghiem_WebAdmin.Controllers
             }
 
             var userPrincipal = this.ValidateToken(result.ResultObject);
-            var isAdmin = userPrincipal.IsInRole("1");
+            var isAdmin = userPrincipal.IsInRole("3");
             if (isAdmin == false)
             {
                 TempData["message"] = "You do not have persmission";
