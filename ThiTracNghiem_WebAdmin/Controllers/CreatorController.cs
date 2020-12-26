@@ -8,9 +8,15 @@ namespace ThiTracNghiem_WebAdmin.Controllers
 {
     public class CreatorController : Controller
     {
-        public IActionResult CreatorLayout()
+        public IActionResult ExamInRoom()
         {
             return View();
         }
+        public IActionResult Rooms()
+        {
+            return View();
+        }
+
+
     }
 }
