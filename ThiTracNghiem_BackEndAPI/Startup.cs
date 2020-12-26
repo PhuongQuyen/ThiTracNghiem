@@ -23,10 +23,22 @@ namespace ThiTracNghiem_BackEndAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:5002").AllowAnyMethod().AllowAnyHeader();
+                    });
+
+            });
             services.AddDbContext<tracnghiemContext>(options => options.UseMySQL(Configuration.GetConnectionString("DbConnectionString")));
 
             services.AddTransient<IUserService, UserService>();
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+             );
 
             string issuer = Configuration.GetValue<string>("Tokens:Issuer");
             string signingKey = Configuration.GetValue<string>("Tokens:Key");
@@ -69,6 +81,8 @@ namespace ThiTracNghiem_BackEndAPI
             app.UseAuthentication();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

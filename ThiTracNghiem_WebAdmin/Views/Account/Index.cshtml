@@ -1,0 +1,274 @@
+﻿@model UserViewModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var users = (List<UserViewModel>)ViewData["users"];
+    var token = HttpContextAccessor.HttpContext.Session.GetString("Token");
+}
+
+@section Header{
+    <!-- DataTables CSS -->
+    <link href="~/admin-assets/css/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
+    <!-- DataTables Responsive CSS -->
+    <link href="~/admin-assets/css/dataTables/dataTables.responsive.css" rel="stylesheet" />
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="row page-header">
+            <div class="col-md-1">
+                <a href="#" title="Quay về trang trước"><h1><i class="fa fa-arrow-left"></i></h1></a>
+            </div>
+            <div class="col-md-11">
+                <h1>Tài khoản</h1>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <a href="javascript:void(0)" id="create-new-account" type="button" class="btn btn-success">
+            <i class="fa fa-plus"></i> Thêm tài khoản
+        </a>
+        <br><br>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Danh sách tài khoản
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="accounts-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Email</th>
+                                <th>Họ</th>
+                                <th>Tên</th>
+                                <th>Quyền</th>
+                                <th>Ngày tham gia</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in users)
+                            {
+                                <tr role="row" class="odd">
+                                    <td class="sorting_1">@item.Id</td>
+                                    <td>@item.Email</td>
+                                    <td>@item.FirstName</td>
+                                    <td>@item.LastName</td>
+                                    <td>@item.RoleTitle</td>
+                                    <td>@item.JoinDate</td>
+                                    <td>
+                                        <a href="javascript:void(0)" data-id="@item.Id" data-toggle="tooltip" id="edit" data-id="1" data-original-title="Edit" class="btn btn-xs btn-warning btn-edit"><i class="glyphicon glyphicon-edit"></i> Sửa</a>
+                                        <a href="javascript:void(0)" data-id="@item.Id" data-toggle="tooltip" id="delete" data-id="1" data-original-title="Delete" class="btn btn-xs btn-danger btn-delete"><i class="glyphicon glyphicon-trash"></i> Xóa</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="modal fade" id="account-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="accountForm" name="accountForm" class="form-horizontal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="account-modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="account_id" id="account_id">
+                    <div class="form-group">
+                        <label for="account-email" class="col-sm-12">
+                            Email (<span style="color:red;">*</span>)
+                            <span id="default-password">(Mật khẩu mặc định: 123456)</span>
+                        </label>
+                        <div class="col-sm-12">
+                            <input type="email" class="form-control" id="account-email" asp-for="Email" value=""maxlength="50" required="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="account-lname" class="col-sm-12">Họ</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="account-lname" asp-for="LastName" value="" maxlength="50">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="account-fname" class="col-sm-12">Tên (<span style="color:red;">*</span>)</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="account-fname" asp-for="FirstName" value="" maxlength="50" required="">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="account-role" class="col-sm-12">Quyền</label>
+                        <div class="col-sm-12">
+                            <select asp-for="RoleId" id="account-role" class="form-control">
+                                <option value="1">1 - Thành viên</option>
+                                <option value="2">2 - Biên tập</option>
+                                <option value="3">3 - Quản trị</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="account-gender" class="col-sm-12">Giới tính</label>
+                        <div class="col-sm-12">
+                            <select asp-for="Gender" id="account-gender" class="form-control">
+                                <option value="1">Nam</option>
+                                <option value="2">Nữ</option>
+                                <option value="3">Không xác định</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <label for="account-wplace" class="col-sm-12">Nơi làm việc</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="account-wplace" asp-for="WorkPlace" value="" maxlength="50">
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <label for="account-phone" class="col-sm-12">Điện thoại</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control" id="account-phone" asp-for="PhoneNumber"  value="" maxlength="50">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="account-address" class="col-sm-12">Địa chỉ</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="account-address" asp-for="Address" value="" maxlength="50">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">@*  *@
+                    <button type="submit" id="btn-save" name="btn-save" class="btn btn-success center-block">
+                        Lưu
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+    var token = '@token';
+    // Create new account button
+    $('#create-new-account').click(function () {
+        $('#default-password').show();
+        $('#account_id').val('');
+        $('#accountForm').trigger("reset");
+        $('#account-modal-title').html("Thêm tài khoản mới");
+        $('#account-modal').modal('show');
+        $('#accountForm').attr({
+            action: "https://localhost:5001/api/user/register",
+            method: "POST"
+        });
+    });
+
+    $('body').on('click', '#edit', function () {
+        let accountID = $(this).data("id");
+        $('#default-password').hide();
+        $('#account-modal').modal('show');
+        $('#accountForm').attr({
+            action: "https://localhost:5001/api/user/update/" + accountID,
+            method: "PUT"
+        });
+        $('#account-modal-title').html("Sửa thông tin tài khoản");
+        $('#account_id').val(accountID);
+
+        $.ajax({
+            type: "get",
+            url: "https://localhost:5001/api/user/getById?id=" + accountID,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            },
+            success: function (data) {
+                $('#account-email').val(data.email);
+                $('#account-lname').val(data.lastName);
+                $('#account-fname').val(data.firstName);
+                $('#account-role').val(data.role_id);
+                $('#account-gender').val(data.gender);
+                $('#account-wplace').val(data.workPlace);
+                $('#account-phone').val(data.phoneNumber);
+                $('#account-address').val(data.address);
+            },
+            error: function (data) {
+                console.log('Error: ', data);
+            }
+        });
+    });
+
+    //Delete button
+    $('body').on('click', '#delete', function () {
+        let accountID = $(this).data("id");
+        if (confirm('Bạn có chắc muốn xóa tài khoản ' + accountID + ' ?') === true)
+            $.ajax({
+                type: "get",
+                url: "https://localhost:5001/api/user/delete/" + accountID,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                },
+                success: function (data) {
+                    let oTable = $('#accounts-table').dataTable();
+                    oTable.fnDraw(false);
+                },
+                error: function (data) {
+                    console.log('Error: ', data);
+                }
+            });
+    });
+
+    // Save button
+    $('#accountForm').validate({
+        submitHandler: function (form) {
+            $('#btn-save').html('Loading..');
+            var url = $("#accountForm").attr("action");
+            $.ajax({
+                data: $('#accountForm').serialize(),
+                type: "post",
+                url: url,
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                },
+                success: function (data) {
+                    if (!data.isSuccessed) {
+                        alert(data.message);
+                        $('#btn-save').html('Lưu');
+                    } else {
+                        $('#accountForm').trigger('reset');
+                        $('#account-modal').modal('hide');
+                        $('#btn-save').html('Lưu');
+                        window.location = "/account";
+                    }
+                },
+                error: function (data) {
+                    console.log('Error: ', data);
+                    $('#btn-save').html('Lưu');
+                }
+            });
+        }
+    });
+    </script>
+    <script src="~/admin-assets/js/dataTables/jquery.dataTables.min.js"></script>
+    <script src="~/admin-assets/js/dataTables/dataTables.bootstrap.min.js"></script>
+}

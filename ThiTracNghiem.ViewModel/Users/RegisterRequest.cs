@@ -7,8 +7,6 @@ namespace ThiTracNghiem_ViewModel.Users
     {
         public string Email { set; get; }
         public string Password { set; get; }
-        [Compare("Password", ErrorMessage = "password and confirmPassword is not match")]
-        public string ConfirmPassword { set; get; }
         public string FirstName { set; get; }
         public string LastName { set; get; }
         public string WorkPlace { set; get; }

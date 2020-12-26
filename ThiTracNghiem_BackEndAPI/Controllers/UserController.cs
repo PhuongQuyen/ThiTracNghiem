@@ -29,21 +29,33 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
             var resultToken = await _userService.Authencate(request);
             if (string.IsNullOrEmpty(resultToken.ResultObject))
             {
-                return BadRequest(resultToken);
+                return Ok(resultToken);
             }
             return Ok(resultToken);
         }
 
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> Update( int userId)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var result = await _userService.GetById(userId);
+            return Ok(result);
+        }
+
         [HttpPost("register")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register([FromForm] RegisterRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _userService.Register(request);
-            if (result.IsSuccessed == false)
-            {
-                return BadRequest(result);
-            }
+            return Ok(result);
+
+        }
+
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> Update([FromBody] RegisterRequest request,int userId)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var result = await _userService.Update(request, userId);
             return Ok(result);
         }
 
@@ -51,8 +63,24 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
         public async Task<IActionResult> Delete([FromRoute] int userId)
         {
             var result = await _userService.Delete(userId);
-            if (result.IsSuccessed == false) return BadRequest(result);
+            if (result.IsSuccessed == false) return Ok(result);
             return Ok(result);
         }
+
+        [HttpGet("getListUser")]
+        public async Task<IActionResult> GetListUser()
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var result = await _userService.GetListUser();
+            return Ok(result);
+        }
+
+        [HttpGet("getListRole")]
+        public async Task<IActionResult> GetListRole()
+        {
+            var result = await _userService.GetListRole();
+            return Ok(result);
+        }
+
     }
 }
