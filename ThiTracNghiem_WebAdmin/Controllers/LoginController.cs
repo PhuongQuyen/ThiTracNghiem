@@ -69,7 +69,7 @@ namespace ThiTracNghiem_WebAdmin.Controllers
             var authProperties = new AuthenticationProperties
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = request.RememberMe // có sử dụng persistent cookie
+                IsPersistent = true
             };
 
             await HttpContext.SignInAsync(

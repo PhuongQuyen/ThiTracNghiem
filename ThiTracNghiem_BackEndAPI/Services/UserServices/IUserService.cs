@@ -14,11 +14,10 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
         Task<ApiResult<string>> GetPasswordResetToken(string email);
         Task<ApiResult<string>> Register(RegisterRequest request);
         Task<ApiResult<UserViewModel>> GetById(int userId);
-        Task<ApiResult<List<UserViewModel>>> GetListUser();
+        Task<DatatableResult<List<UserViewModel>>> GetListUser(DatatableRequestBase request);
         Task<ApiResult<UserViewModel>> GetByEmail(string email);
         Task<ApiResult<UserViewModel>> GetByUserName(string userName);
         Task<ApiResult<bool>> Delete(int userId);
         Task<ApiResult<bool>> Update(RegisterRequest request, int userId);
-        Task<ApiResult<List<RoleViewModel>>> GetListRole();
     }
 }
