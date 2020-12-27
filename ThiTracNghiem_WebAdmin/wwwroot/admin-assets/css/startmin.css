@@ -663,3 +663,7 @@ table.dataTable thead .sorting:after {
 label.error {
     color: red;
 }
+
+a#edit{
+    margin-right: 5px;
+}

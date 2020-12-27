@@ -17,10 +17,13 @@ namespace ThiTracNghiem_WebAdmin.Controllers
             _userAPIClient = userAPIClient;
             _configuration = configuration;
         }
-        public async Task<IActionResult> IndexAsync()
+        public IActionResult Index()
         {
-            var result = await _userAPIClient.getListUser();
-            ViewData["users"] = result.ResultObject;
+            return View();
+        }
+
+        public IActionResult Roles()
+        {
             return View();
         }
     }
