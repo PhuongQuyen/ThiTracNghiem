@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using ThiTracNghiem_BackEndAPI.Services.UserServices;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ThiTracNghiem_BackEndAPI.Controllers
@@ -12,11 +12,17 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
     [ApiController]
     public class ExamController : ControllerBase
     {
+        private readonly IExamService _examService;
+        public ExamController(IExamService examService)
+        {
+            _examService = examService;
+        }
         // GET: api/<ExamController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var result = await _examService.GetListExam();
+            return Ok(result);
         }
 
         // GET api/<ExamController>/5

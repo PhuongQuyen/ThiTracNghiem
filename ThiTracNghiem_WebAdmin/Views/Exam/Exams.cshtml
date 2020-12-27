@@ -31,9 +31,9 @@
                                 <th>ID</th>
                                 <th>Tiêu đề</th>
                                 <th>Câu hỏi cần có</th>
-                                <th>Câu hỏi hiện có</th>
+                                @*<th>Câu hỏi hiện có</th>*@
                                 <th>Thời gian</th>
-                                <th>Lượt Thi</th>
+                                @*<th>Lượt Thi</th>*@
                                 <th>Trạng thái</th>
                                 <th>Ngày tạo</th>
                                 <th>Hành động</th>
@@ -141,30 +141,48 @@
 @section Scripts{ 
     <script>
         $(document).ready(function () {
-            $.ajaxSetup({
+            @*$.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            });
+            });*@
             $('#exam-table').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '{!! route('examsTable') !!}',
+                    url: "https://localhost:5001/api/exam",
                     type: 'GET',
-                },
+                    "dataSrc": "resultObject"
+                }, 
                 columns: [
                     { data: 'id' },
-                    { data: 'title' },
+                    { data: 'examTitle' },
                     { data: 'totalQuestions' },
-                    { data: 'currentQuestions' },
+                    @*{ data: 'currentQuestions' },*@
                     { data: 'timeLimit' },
-                    { data: 'totalScores' },
+                    @*{ data: 'totalScores' },*@
                     { data: 'status' },
                     { data: 'dateCreated' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false }
+               
                 ],
+                "columnDefs": [{
+                    targets: 6,
+                    data: 'id',
+                    render: function (data, type) {
+                        let test = '<a href="javascript:void(0)" id="edit" data-id="' + data + '" data-original-title="Edit" class="btn btn-xs btn-warning btn-edit"><i class="glyphicon glyphicon-edit"></i> Sửa</a> ';
+                        test +='<a href="javascript:void(0)" id="delete"  data-id="' + data + '" data-original-title="Delete" class="btn btn-xs btn-danger btn-delete"><i class="glyphicon glyphicon-trash"></i> Xóa</a > ';
+                        return test;
+                    }
+                }, {
+                        targets: 1,
+                        data: 'examTitle',
+                        render: function (data, type, row) {
+                            var title = '<a href="' + " " + row[0]+ '">' + data + '</a > ';
+                            return $title;
+                        }
+                    }
+                ]
             });
         });
 
@@ -181,14 +199,14 @@
             let examID = $(this).data("id");
             $('#exam-modal').modal('show');
             $('#examForm').attr({
-                action: '{!! url('tn- admin - th / exams / edit') !!}' + '/' + examID,
+                action: "",
                 method: "POST"
                 });
         $('#exam-modal-title').html("Sửa đề thi");
         $('#exam_id').val(examID);
         $.ajax({
             type: "get",
-            url: '{!! url('tn- admin - th / exams / edit') !!}' + '/' + examID,
+            url: "",
             success: function (data) {
                 $('#exam-title').val(data.ExamTitle);
                 $('#exam-description').val(data.ExamDescription);
@@ -209,7 +227,7 @@
             if (confirm('Bạn có chắc muốn xóa đề thi ' + examID + ' ?') === true)
                 $.ajax({
                     type: "get",
-                    url: '{!! url('tn- admin - th / exams / delete ') !!}' + '/' + examID,
+                    url: "",
                     success: function (data) {
                         alert(data.message);
                         let oTable = $('#exam-table').dataTable();
@@ -228,7 +246,7 @@
                 $.ajax({
                     data: $('#examForm').serialize(),
                     type: "post",
-                    url: '{!! url('tn- admin - th / exams / store') !!}',
+                    url: "",
                     dataType: 'json',
                     success: function (data) {
                         $('#examForm').trigger('reset');

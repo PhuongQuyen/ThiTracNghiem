@@ -36,6 +36,8 @@ namespace ThiTracNghiem_BackEndAPI
 
             services.AddTransient<IUserService, UserService>();
 
+            services.AddTransient<IExamService, ExamService>();
+
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
              );
