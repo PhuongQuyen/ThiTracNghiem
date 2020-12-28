@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             _configuration = configuration;
             _context = context;
         }
-        public async Task<ApiResult<string>> Create(ExamViewModel request)
+        public async Task<ApiResult<string>> Create(Exams request)
         {
             var exam = new Exams()
             {
@@ -74,13 +75,62 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             return new ApiResultSuccess<Exams>(exam);
         }
 
-        public async Task<ApiResult<List<Exams>>> GetListExam()
+        public async Task<DatatableResult<List<ExamViewModel>>> GetListExam(DatatableRequestBase request)
         {
-            var exams =  _context.Exams.ToList();
-            return new ApiResultSuccess<List<Exams>>(exams);
+            var query = from e in _context.Exams select e;
+            int totalRow = await query.CountAsync();
+            if (request.sortColumnDirection == "desc")
+            {
+                switch (request.sortColumn)
+                {
+                    case "0": query = query.OrderByDescending(e => e.Id); break;
+                    case "1": query = query.OrderByDescending(e => e.ExamTitle); break;
+                    case "2": query = query.OrderByDescending(e => e.TotalQuestions); break;
+                    case "3": query = query.OrderByDescending(e => e.TimeLimit); break;
+                    case "4": query = query.OrderByDescending(e => e.Status); break;
+                    case "5": query = query.OrderByDescending(e => e.DateCreated); break;
+                }
+
+            }
+            else if (request.sortColumnDirection == "asc")
+            {
+                switch (request.sortColumn)
+                {
+                    case "0": query = query.OrderBy(e => e.Id); break;
+                    case "1": query = query.OrderBy(e => e.ExamTitle); break;
+                    case "2": query = query.OrderBy(e => e.TotalQuestions); break;
+                    case "3": query = query.OrderBy(e => e.TimeLimit); break;
+                    case "4": query = query.OrderBy(e => e.Status); break;
+                    case "5": query = query.OrderBy(e => e.DateCreated); break;
+                }
+
+            }
+            var data = await query.Skip(request.Skip)
+                .Take(request.PageSize)
+                  .Select(x => new ExamViewModel()
+                  {
+                      Id = x.Id,
+                      ExamTitle = x.ExamTitle,
+                      ExamDescription= x.ExamDescription,
+                      TotalQuestions =x.TotalQuestions,
+                      TimeLimit = x.TimeLimit,
+                      Status = x.Status,
+                      DateCreated = x.DateCreated,
+                      Action = String.Format("<a href = 'javascript:void(0)' data-toggle = 'tooltip' id = 'edit' data-id = '{0}' data-original-title='Edit' class='btn mr-5 btn-xs btn-warning btn-edit'><i class='glyphicon glyphicon-edit'></i> Sửa</a><a href = 'javascript:void(0)' data-toggle='tooltip' id='delete' data-id='{1}' data-original-title='Delete' class='btn btn-xs btn-danger btn-delete'><i class='glyphicon glyphicon-trash'></i> Xóa</a>", x.Id, x.Id)
+                  }
+                  ).ToListAsync();
+            var result = new DatatableResult<List<ExamViewModel>>()
+            {
+                recordsTotal = totalRow,
+                recordsFiltered = totalRow,
+                Draw = request.Draw,
+                Data = data
+            };
+            return result;
+
         }
 
-        public async Task<ApiResult<bool>> Update(ExamViewModel request, int examId)
+        public async Task<ApiResult<bool>> Update(Exams request, int examId)
         {
             var exam = await _context.Exams.FindAsync(examId);
             if (exam != null)
@@ -92,6 +142,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             exam.ExamtypeId = request.ExamtypeId;
             exam.TotalQuestions = request.TotalQuestions;
             exam.TimeLimit = request.TimeLimit;
+            exam.Status = request.Status;
             var numRowChange = await _context.SaveChangesAsync();
             if (numRowChange > 0)
             {

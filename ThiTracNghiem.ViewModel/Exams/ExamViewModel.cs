@@ -15,5 +15,6 @@ namespace ThiTracNghiem_ViewModel.Exams
         public string ExamSlug { get; set; }
         public DateTime DateCreated { get; set; }
         public int Status { get; set; }
+        public string Action { get; set; }
     }
 }
