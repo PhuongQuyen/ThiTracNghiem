@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ExamController : ControllerBase
     {
         private readonly IExamService _examService;
@@ -49,7 +51,7 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
 
         // POST api/<ExamController>
         [HttpPost]
-        public IActionResult Post([FromBody] ExamViewModel exam)
+        public IActionResult Post([FromForm] ExamViewModel exam)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var status = _examService.Create(exam);
@@ -58,7 +60,7 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
 
         // PUT api/<ExamController>/5
         [HttpPost("update/{id}")]
-        public async Task<IActionResult> Update(int id,[FromBody] ExamViewModel examViewModel)
+        public async Task<IActionResult> Update(int id,[FromForm] ExamViewModel examViewModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var status = await _examService.Update(examViewModel, id);
@@ -66,10 +68,11 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
         }
 
         // DELETE api/<ExamController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpGet("delete/{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            return;
+            var result = await _examService.Delete(id);
+            return Ok(result);
         }
     }
 }

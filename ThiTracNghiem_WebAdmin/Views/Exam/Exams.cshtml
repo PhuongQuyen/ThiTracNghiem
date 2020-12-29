@@ -5,19 +5,6 @@
 @{
     var token = HttpContextAccessor.HttpContext.Session.GetString("Token");
 }
-<div class="row">
-    <div class="col-lg-12">
-        <div class="row page-header">
-            <div class="col-md-1">
-                <a href="#" title="Quay về trang trước"><h1><i class="fa fa-arrow-left"></i></h1></a>
-            </div>
-            <div class="col-md-11">
-                <h1>Đề thi</h1>
-            </div>
-        </div>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-12">
@@ -67,7 +54,7 @@
                     <h4 class="modal-title" id="exam-modal-title"></h4>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="Id" asp-for="Id" ExamTitle id="exam_id">
+                    <input type="hidden"  ExamTitle id="exam_id">
                     <div class="form-group">
                         <label for="exam-title" class="col-sm-12">Tên đề thi</label>
                         <div class="col-sm-12">
@@ -147,12 +134,13 @@
 
 @section Scripts{
     <script>
+         var token = '@token';
         $(document).ready(function () {
-            @*$.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });*@
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                },
+            });
             $('#exam-table').DataTable({
                 responsive: true,
                 processing: true,
@@ -190,7 +178,7 @@
             $('#examForm').trigger("reset");
             $('#exam-modal-title').html("Thêm đề thi mới");
             $('#exam-modal').modal('show');
-            $('#accountForm').attr({
+            $('#examForm').attr({
                 action: "https://localhost:5001/api/exam",
                 method: "POST"
             });
@@ -231,9 +219,8 @@
             if (confirm('Bạn có chắc muốn xóa đề thi ' + examID + ' ?') === true)
                 $.ajax({
                     type: "get",
-                    url: "",
+                    url: "https://localhost:5001/api/exam/delete/" + examID,
                     success: function (data) {
-                        alert(data.message);
                         let oTable = $('#exam-table').dataTable();
                         oTable.fnDraw(false);
                     },
@@ -250,10 +237,12 @@
                 var url = $("#examForm").attr("action");
                 $.ajax({
                     data: $('#examForm').serialize(),
-                    type: $("#examForm").attr("method"),
+                    type: "post",
                     url: url,
                     dataType: 'json',
-                    contentType:'application/json',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    },
                     success: function (data) {
                         $('#examForm').trigger('reset');
                         $('#exam-modal').modal('hide');

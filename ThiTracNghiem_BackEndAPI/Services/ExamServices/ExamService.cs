@@ -44,12 +44,12 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
         public async Task<ApiResult<bool>> Delete(int examId)
         {
 
-            var user = await _context.Exams.FindAsync(examId);
-            if (user != null)
+            var exam = await _context.Exams.FindAsync(examId);
+            if (exam == null)
             {
                 return new ApiResultErrors<bool>("Not found");
             }
-            _context.Exams.Remove(user);
+            _context.Exams.Remove(exam);
             var numRowChange = await _context.SaveChangesAsync();
             if (numRowChange > 0)
             {
@@ -132,7 +132,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
         public async Task<ApiResult<bool>> Update(ExamViewModel request, int examId)
         {
             var exam = await _context.Exams.FindAsync(examId);
-            if (exam != null)
+            if (exam == null)
             {
                 return new ApiResultErrors<bool>("Not found");
             }
@@ -142,15 +142,8 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
             exam.TotalQuestions = request.TotalQuestions;
             exam.TimeLimit = request.TimeLimit;
             exam.Status = request.Status;
-            var numRowChange = await _context.SaveChangesAsync();
-            if (numRowChange > 0)
-            {
-                return new ApiResultSuccess<bool>();
-            }
-            else
-            {
-                return new ApiResultErrors<bool>("Faild");
-            }
+            await _context.SaveChangesAsync();
+            return new ApiResultSuccess<bool>();
         }
     }
 }
