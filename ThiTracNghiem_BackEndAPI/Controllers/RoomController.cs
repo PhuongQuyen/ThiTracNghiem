@@ -5,58 +5,57 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ThiTracNghiem_BackEndAPI.Services.RoleServices;
+using ThiTracNghiem_BackEndAPI.Services.RoomService;
 using ThiTracNghiem_ViewModel.Commons;
-using ThiTracNghiem_ViewModel.Roles;
+using ThiTracNghiem_ViewModel.Rooms;
 
 namespace ThiTracNghiem_BackEndAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class RoleController : ControllerBase
+    public class RoomController : ControllerBase
     {
-        private readonly IRoleService _roleService;
-        public RoleController(IRoleService roleService)
+        private readonly IRoomService _roomService;
+        public RoomController(IRoomService roomService)
         {
-            _roleService = roleService;
+            _roomService = roomService;
         }
 
-        [HttpGet("GetById/{roleId}")]
-        public async Task<IActionResult> GetById(int roleId)
+        [HttpGet("GetById/{roomId}")]
+        public async Task<IActionResult> GetById(int roomId)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roleService.GetById(roleId);
+            var result = await _roomService.GetById(roomId);
             return Ok(result);
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromForm] RoleViewModel request)
+        public async Task<IActionResult> Create([FromForm] RoomRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roleService.Create(request);
-            return Ok(result);
-
-        }
-
-        [HttpPost("update/{roleId}")]
-        public async Task<IActionResult> Update([FromForm] RoleViewModel request, int roleId)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roleService.Update(request, roleId);
+            var result = await _roomService.Create(request);
             return Ok(result);
         }
 
-        [HttpGet("delete/{roleId}")]
-        public async Task<IActionResult> Delete([FromRoute] int roleId)
+        [HttpPost("update/{roomId}")]
+        public async Task<IActionResult> Update([FromForm] RoomRequest request, int roomId)
         {
-            var result = await _roleService.Delete(roleId);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var result = await _roomService.Update(request, roomId);
+            return Ok(result);
+        }
+
+        [HttpGet("delete/{roomId}")]
+        public async Task<IActionResult> Delete([FromRoute] int roomId)
+        {
+            var result = await _roomService.Delete(roomId);
             if (result.IsSuccessed == false) return Ok(result);
             return Ok(result);
         }
 
-        [HttpGet("getListRole")]
-        public async Task<IActionResult> getListRole()
+        [HttpGet("GetListRoom")]
+        public async Task<IActionResult> GetListRoom()
         {
             var start = Request.Query["start"].FirstOrDefault();
             var length = Request.Query["length"].FirstOrDefault();
@@ -71,9 +70,9 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
             };
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roleService.GetListRole(requestBase);
+            var result = await _roomService.GetListRoom(requestBase);
             return Ok(result);
         }
-
+     
     }
 }

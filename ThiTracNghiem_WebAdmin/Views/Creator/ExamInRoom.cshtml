@@ -1,25 +1,14 @@
-﻿@section Header{
+﻿@model RoomRequest
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var token = HttpContextAccessor.HttpContext.Session.GetString("Token");
+}
+@section Header{
     <link href="~/admin-assets/css/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
     <link href="~/admin-assets/css/dataTables/dataTables.responsive.css" rel="stylesheet" />
 }
 
-<div class="row">
-    <div class="col-lg-12">
-        <div class="row page-header">
-            <div class="col-md-1">
-                <a href="{{url()->previous()}}" title="Quay về trang trước">
-                    <h1>
-                        <i class="fa fa-arrow-left"></i>
-                    </h1>
-                </a>
-            </div>
-            <div class="col-md-11">
-                <h1>{{$room->roomName." | MP: ".$examInfo->examTitle }}</h1>
-            </div>
-        </div>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-12">
@@ -84,7 +73,7 @@
 <div class="modal fade" id="exam-modal" aria-hidden="true">
     <div class="modal-dialog">
         <form id="examForm" name="examForm" class="form-horizontal">
-          
+
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="exam-modal-title"></h4>
@@ -172,7 +161,7 @@
 <div class="modal fade" id="question-modal" aria-hidden="true">
     <div class="modal-dialog" style="width:70%;">
         <form id="questionForm" name="questionForm" class="form-horizontal">
-           
+
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="question-modal-title"></h4>
@@ -254,8 +243,8 @@
     </div>
 </div>
 
-@section Scripts{ 
-<script>
+@section Scripts{
+    <script>
         let mass_create_status = false;
         $(document).ready(function () {
             $.ajaxSetup({
@@ -280,7 +269,6 @@
                 ],
             });
         });
-
         //remove question from exam button
         $('body').on('click', '#delete', function () {
             let questionID = $(this).data('id');
@@ -298,7 +286,6 @@
                 });
             }
         });
-
         //edit question button
         $('body').on('click', '#edit', function () {
             let questionID = $(this).data("id");
@@ -358,7 +345,6 @@
                 }
             });
         });
-
         // mass status switch
         $('#btn-switch-mass-create').click(function () {
             mass_create_status = mass_create_status === true ? false : true;
@@ -373,7 +359,6 @@
                 $('.mass-create-status').html('TẮT');
             }
         });
-
         //add new question to exam
         $('#btn-add-question').click(function () {
             let total_questions = {{$examInfo->totalQuestions}};
@@ -404,7 +389,6 @@
                 }
             });
         });
-
         // Save question button
         $('#questionForm').validate({
             submitHandler: function (form) {
@@ -443,7 +427,6 @@
                         $('#btn-save').html('Lưu');
                         let oTable = $('#questions-table').dataTable();
                         oTable.fnDraw(false);
-
                     },
                     error: function (data) {
                         bootbox.alert({
@@ -456,7 +439,6 @@
                 });
             }
         });
-
         //edit exam info
         $('#btn-edit-exam').click(function () {
             let examID = {!! $examInfo->id !!};
@@ -483,7 +465,6 @@
                 }
             });
         });
-
         // Save exam info button
         $('#examForm').validate({
             submitHandler: function (form) {
@@ -501,7 +482,6 @@
                         setTimeout(function () {
                             location.reload();
                         },1000);
-
                     },
                     error: function (data) {
                         console.log('Error: ', data);
@@ -510,7 +490,6 @@
                 });
             }
         });
-
         //delete all questions
         $('#btn-delete-all-quesions').click(function () {
             bootbox.confirm({
@@ -557,9 +536,8 @@
                 }
             });
         });
-
-</script>
-<!-- DataTables JavaScript -->
-<script src="~/admin-assets/js/dataTables/jquery.dataTables.min.js"></script>
-<script src="~/admin-assets/js/dataTables/dataTables.bootstrap.min.js"></script>
+    </script>
+    <!-- DataTables JavaScript -->
+    <script src="~/admin-assets/js/dataTables/jquery.dataTables.min.js"></script>
+    <script src="~/admin-assets/js/dataTables/dataTables.bootstrap.min.js"></script>
 }

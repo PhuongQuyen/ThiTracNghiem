@@ -8,22 +8,22 @@ using ThiTracNghiem_WebAdmin.Services.Users;
 
 namespace ThiTracNghiem_WebAdmin.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IUserAPIClient _userAPIClient;
-        private readonly IConfiguration _configuration;
-        public AccountController(IUserAPIClient userAPIClient, IConfiguration configuration)
+        public AccountController(IUserAPIClient userAPIClient, IConfiguration configuration):base(configuration)
         {
             _userAPIClient = userAPIClient;
-            _configuration = configuration;
         }
-        public IActionResult Index()
+        public IActionResult Accounts()
         {
+            ViewBag.Title = "Tài khoản";
             return View();
         }
 
         public IActionResult Roles()
         {
+            ViewBag.Title = "Quyền";
             return View();
         }
     }

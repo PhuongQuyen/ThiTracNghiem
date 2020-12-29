@@ -138,15 +138,8 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoleServices
             role.RoleTitle = request.Title;
             role.RoleDescription = request.Description;
 
-            var numRowChange = await _context.SaveChangesAsync();
-            if (numRowChange > 0)
-            {
-                return new ApiResultSuccess<bool>();
-            }
-            else
-            {
-                return new ApiResultErrors<bool>("Faild");
-            }
+            await _context.SaveChangesAsync();
+            return new ApiResultSuccess<bool>();
         }
     }
 }
