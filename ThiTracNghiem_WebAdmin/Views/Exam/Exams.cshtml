@@ -1,4 +1,11 @@
-﻿<div class="row">
+﻿@using ThiTracNghiem_ViewModel.Exams
+@model ExamViewModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var token = HttpContextAccessor.HttpContext.Session.GetString("Token");
+}
+<div class="row">
     <div class="col-lg-12">
         <div class="row page-header">
             <div class="col-md-1">
@@ -60,25 +67,25 @@
                     <h4 class="modal-title" id="exam-modal-title"></h4>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="Id"  id="exam_id">
+                    <input type="hidden" name="Id" asp-for="Id" ExamTitle id="exam_id">
                     <div class="form-group">
                         <label for="exam-title" class="col-sm-12">Tên đề thi</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control"  id="exam-title" name="ExamTitle" value=""
+                            <input type="text" class="form-control" asp-for="ExamTitle" id="exam-title" name="ExamTitle" value=""
                                    maxlength="50" required="">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="exam-description" class="col-sm-12">Mô tả</label>
                         <div class="col-sm-12">
-                            <textarea class="form-control" id="exam-description" name="ExamDescription"
+                            <textarea class="form-control" asp-for="ExamDescription" id="exam-description" name="ExamDescription"
                                       value="" required></textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-12" for="exam-type">Loại đề thi</label>
                         <div class="col-sm-12">
-                            <select class="form-control" id="exam-type"  name="ExamtypeId">
+                            <select class="form-control" asp-for="ExamtypeId" id="exam-type" name="ExamtypeId">
                                 <option value="1">1 - Chuẩn</option>
                                 <option value="2">2 - Tổng hợp</option>
                                 <option value="3">3 - Internet</option>
@@ -93,7 +100,7 @@
                     <div class="form-group">
                         <label class="col-sm-12" for="exam-total-questions">Số câu</label>
                         <div class="col-sm-12">
-                            <select class="form-control" id="exam-total-questions"  name="TotalQuestions">
+                            <select class="form-control" asp-for="TotalQuestions" id="exam-total-questions" name="TotalQuestions">
                                 <option value="20">20</option>
                                 <option value="30">30</option>
                                 <option value="40">40</option>
@@ -106,7 +113,7 @@
                     <div class="form-group">
                         <label class="col-sm-12" for="exam-time-limit">Thời gian</label>
                         <div class="col-sm-12">
-                            <select class="form-control"  id="exam-time-limit" name="TimeLimit">
+                            <select class="form-control" asp-for="TimeLimit" id="exam-time-limit" name="TimeLimit">
                                 <option value="10">10</option>
                                 <option value="20">20</option>
                                 <option value="30">30</option>
@@ -120,7 +127,7 @@
                     <div class="form-group">
                         <label class="col-sm-12">Trạng thái</label>
                         <div class="col-sm-12">
-                            <select class="form-control" id="exam-status" name="Status">
+                            <select class="form-control" asp-for="Status" id="exam-status" name="Status">
                                 <option value="0">Đóng</option>
                                 <option value="1">Mở</option>
                             </select>
@@ -154,8 +161,6 @@
                     url: "https://localhost:5001/api/exam",
                     type: 'GET',
                     "dataSrc": "data",
-
-
                 },
                 columns: [
                     { data: 'id' },
@@ -196,7 +201,7 @@
             let examID = $(this).data("id");
             $('#exam-modal').modal('show');
             $('#examForm').attr({
-                action: "https://localhost:5001/api/exam/" + examID,
+                action: "https://localhost:5001/api/exam/update/" + examID,
                 method: "POST"
                 });
         $('#exam-modal-title').html("Sửa đề thi");
@@ -204,6 +209,7 @@
         $.ajax({
             type: "get",
             url: "https://localhost:5001/api/exam/" + examID,
+
             success: function (data) {
                 console.log(data);
                 $('#exam-title').val(data.resultObject.examTitle);
@@ -244,9 +250,10 @@
                 var url = $("#examForm").attr("action");
                 $.ajax({
                     data: $('#examForm').serialize(),
-                    type: "post",
+                    type: $("#examForm").attr("method"),
                     url: url,
                     dataType: 'json',
+                    contentType:''
                     success: function (data) {
                         $('#examForm').trigger('reset');
                         $('#exam-modal').modal('hide');

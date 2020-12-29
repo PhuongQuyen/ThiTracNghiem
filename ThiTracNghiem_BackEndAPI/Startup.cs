@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using ThiTracNghiem_BackEndAPI.Models;
+using ThiTracNghiem_BackEndAPI.Services.ExamServices;
 using ThiTracNghiem_BackEndAPI.Services.RoleServices;
 using ThiTracNghiem_BackEndAPI.Services.UserServices;
 
@@ -37,9 +38,7 @@ namespace ThiTracNghiem_BackEndAPI
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
-
             services.AddTransient<IExamService, ExamService>();
-
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
              );

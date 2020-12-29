@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using ThiTracNghiem_BackEndAPI.Models;
 using ThiTracNghiem_ViewModel.Commons;
 using ThiTracNghiem_ViewModel.Exams;
-
-namespace ThiTracNghiem_BackEndAPI.Services.UserServices
+namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
 {
     public class ExamService : IExamService
     {
@@ -19,7 +18,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             _configuration = configuration;
             _context = context;
         }
-        public async Task<ApiResult<string>> Create(Exams request)
+        public async Task<ApiResult<string>> Create(ExamViewModel request)
         {
             var exam = new Exams()
             {
@@ -59,7 +58,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             return new ApiResultErrors<bool>("Can not detete");
         }
 
-        public async Task<ApiResult<Exams>> GetById(int examId)
+        public async Task<ApiResult<ExamViewModel>> GetById(int examId)
         {
             var exam = await _context.Exams.FindAsync(examId);
             var examViewModel = new ExamViewModel()
@@ -72,7 +71,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
                 TimeLimit = exam.TimeLimit,
                 Status = exam.Status
             };
-            return new ApiResultSuccess<Exams>(exam);
+            return new ApiResultSuccess<ExamViewModel>(examViewModel);
         }
 
         public async Task<DatatableResult<List<ExamViewModel>>> GetListExam(DatatableRequestBase request)
@@ -111,8 +110,8 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
                   {
                       Id = x.Id,
                       ExamTitle = x.ExamTitle,
-                      ExamDescription= x.ExamDescription,
-                      TotalQuestions =x.TotalQuestions,
+                      ExamDescription = x.ExamDescription,
+                      TotalQuestions = x.TotalQuestions,
                       TimeLimit = x.TimeLimit,
                       Status = x.Status,
                       DateCreated = x.DateCreated,
@@ -130,7 +129,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
 
         }
 
-        public async Task<ApiResult<bool>> Update(Exams request, int examId)
+        public async Task<ApiResult<bool>> Update(ExamViewModel request, int examId)
         {
             var exam = await _context.Exams.FindAsync(examId);
             if (exam != null)

@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ThiTracNghiem_BackEndAPI.Services.UserServices;
+using ThiTracNghiem_BackEndAPI.Services.ExamServices;
 using ThiTracNghiem_ViewModel.Commons;
-using ThiTracNghiem_BackEndAPI.Models;
+using ThiTracNghiem_ViewModel.Exams;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
+//sasca
 namespace ThiTracNghiem_BackEndAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -50,7 +49,7 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
 
         // POST api/<ExamController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Exams exam)
+        public IActionResult Post([FromBody] ExamViewModel exam)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var status = _examService.Create(exam);
@@ -58,11 +57,11 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
         }
 
         // PUT api/<ExamController>/5
-        [HttpPost("{id}")]
-        public async Task<IActionResult> Update(int examId, [FromBody] Exams exam)
+        [HttpPost("update/{id}")]
+        public async Task<IActionResult> Update(int id,[FromBody] ExamViewModel examViewModel)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var status = await _examService.Update(exam,examId);
+            var status = await _examService.Update(examViewModel, id);
             return Ok(status);
         }
 
@@ -70,6 +69,7 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            return;
         }
     }
 }
