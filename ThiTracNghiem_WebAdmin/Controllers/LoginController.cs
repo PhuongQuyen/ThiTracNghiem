@@ -57,8 +57,8 @@ namespace ThiTracNghiem_WebAdmin.Controllers
             }
 
             var userPrincipal = this.ValidateToken(result.ResultObject);
-            var isAdmin = userPrincipal.IsInRole("3");
-            if (isAdmin == false)
+            var roleId = userPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
+            if (roleId == null || Convert.ToInt32(roleId) < 2)
             {
                 TempData["message"] = "You do not have persmission";
                 ModelState.AddModelError("", "You do not have persmission");
@@ -76,14 +76,12 @@ namespace ThiTracNghiem_WebAdmin.Controllers
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     userPrincipal,
                     authProperties);
-
-            if (!string.IsNullOrEmpty(ReturnUrl))
+            switch (roleId)
             {
-                return LocalRedirect(ReturnUrl);
-            }
-            else
-            {
-                return RedirectToAction("index", "home");
+                case "2": return RedirectToAction("index", "home");
+                case "3": return RedirectToAction("index", "home");
+                case "4": return RedirectToAction("index", "creator");
+                default: return RedirectToAction("index", "home");
             }
         }
         private ClaimsPrincipal ValidateToken(string jwtToken)

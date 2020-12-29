@@ -213,16 +213,8 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             user.WorkPlace = request.WorkPlace;
             user.PhoneNumber = request.PhoneNumber;
             user.Address = request.Address;
-
-            var numRowChange = await _context.SaveChangesAsync();
-            if (numRowChange > 0)
-            {
-                return new ApiResultSuccess<bool>();
-            }
-            else
-            {
-                return new ApiResultErrors<bool>("Faild");
-            }
+            await _context.SaveChangesAsync();
+            return new ApiResultSuccess<bool>();
         }
 
         private string GenerateJwtToken(UserViewModel user)

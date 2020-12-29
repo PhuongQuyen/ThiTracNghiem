@@ -2,7 +2,6 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var users = (List<UserViewModel>)ViewData["users"];
     var token = HttpContextAccessor.HttpContext.Session.GetString("Token");
 }
 
@@ -13,19 +12,6 @@
     <link href="~/admin-assets/css/dataTables/dataTables.responsive.css" rel="stylesheet" />
 }
 
-<div class="row">
-    <div class="col-lg-12">
-        <div class="row page-header">
-            <div class="col-md-1">
-                <a href="#" title="Quay về trang trước"><h1><i class="fa fa-arrow-left"></i></h1></a>
-            </div>
-            <div class="col-md-11">
-                <h1>Tài khoản</h1>
-            </div>
-        </div>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-12">
@@ -143,7 +129,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">@*  *@
+                <div class="modal-footer">
                     <button type="submit" id="btn-save" name="btn-save" class="btn btn-success center-block">
                         Lưu
                     </button>

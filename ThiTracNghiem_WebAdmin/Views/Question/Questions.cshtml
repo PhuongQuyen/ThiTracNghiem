@@ -1,16 +1,9 @@
-﻿<div class="row">
-    <div class="col-lg-12">
-        <div class="row page-header">
-            <div class="col-md-1">
-                <a href="{{url()->previous()}}" title="Quay về trang trước"><h1><i class="fa fa-arrow-left"></i></h1></a>
-            </div>
-            <div class="col-md-11">
-                <h1>Câu hỏi</h1>
-            </div>
-        </div>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
+﻿@model QuestionRequest
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var token = HttpContextAccessor.HttpContext.Session.GetString("Token");
+}
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-12">
@@ -61,14 +54,14 @@
                     <div class="form-group">
                         <label for="question-content" class="col-sm-12">Nội dung</label>
                         <div class="col-sm-12">
-                            <textarea class="form-control" id="question-content" name="question-content"
+                            <textarea class="form-control" id="question-content" asp-for="QuestionContent"
                                       value="" required></textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-12" for="exam-type">Module</label>
                         <div class="col-sm-12">
-                            <select class="form-control" id="question-module" name="question-module">
+                            <select class="form-control" id="question-module" asp-for="ModuleId">
                                 <option value="1">1 - CNTT</option>
                                 <option value="2">2 - Hệ điều hành</option>
                                 <option value="3">3 - Internet</option>
@@ -81,7 +74,7 @@
                     <div class="form-group">
                         <label class="col-sm-12" for="question-type">Loại câu hỏi</label>
                         <div class="col-sm-12">
-                            <select class="form-control" id="question-type" name="question-type">
+                            <select class="form-control" id="question-type" asp-for="QuestionType">
                                 <option value="1">Một đáp án</option>
                                 <option value="2">Nhiều đáp án</option>
                             </select>
@@ -93,15 +86,15 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <p class="text-center">
-                                        A. <input type="radio" value="A" name="correct-answer">
+                                        A. <input type="radio" value="A" class="Answer" id="correctA" name="Answer">
                                     </p>
-                                    <input type="text" id="answer-A" name="answer-A" class="form-control" value="">
+                                    <input type="text" id="answer-A" asp-for="A" class="form-control" value="">
                                 </div>
                                 <div class="col-sm-6">
                                     <p class="text-center">
-                                        B. <input type="radio" value="B" name="correct-answer">
+                                        B. <input type="radio" value="B" class="Answer" id="correctB" name="Answer">
                                     </p>
-                                    <input type="text" id="answer-B" name="answer-B" class="form-control" value="">
+                                    <input type="text" id="answer-B" asp-for="B" class="form-control" value="">
                                 </div>
                             </div>
                         </div>
@@ -109,15 +102,15 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <p class="text-center">
-                                        C. <input type="radio" value="C" name="correct-answer">
+                                        C. <input type="radio" class="Answer" value="C" id="correctC" name="Answer">
                                     </p>
-                                    <input type="text" id="answer-C" name="answer-C" class="form-control" value="">
+                                    <input type="text" id="answer-C" asp-for="C" class="form-control" value="">
                                 </div>
                                 <div class="col-sm-6">
                                     <p class="text-center">
-                                        D. <input type="radio" value="D" name="correct-answer">
+                                        D. <input type="radio" value="D" class="Answer" id="correctD" name="Answer">
                                     </p>
-                                    <input type="text" id="answer-D" name="answer-D" class="form-control" value="">
+                                    <input type="text" id="answer-D" asp-for="D" class="form-control" value="">
                                 </div>
                             </div>
                         </div>
@@ -125,11 +118,12 @@
                     <div class="form-group">
                         <label for="question-explain" class="col-sm-12">Giải thích đáp án</label>
                         <div class="col-sm-12">
-                            <textarea class="form-control" id="question-explain" name="question-explain"
+                            <textarea class="form-control" id="question-explain" asp-for="AnswerExplain"
                                       value=""></textarea>
                         </div>
                     </div>
                 </div>
+                <input type="hidden" asp-for="CorrectAnswers" value="" />
                 <div class="modal-footer">
                     <div class="text-center">
                         <button type="submit" id="btn-save" name="btn-save" class="btn btn-success">
@@ -147,30 +141,31 @@
 </div>
 
 
-@section Scripts{ 
-<script>
+@section Scripts{
+    <script>
         let mass_create_status = false;
+       var token = '@token';
         $(document).ready(function () {
             $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                },
             });
             $('#questions-table').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '{!! route('questionsTable') !!}',
+                    url: "https://localhost:5001/api/question/getListQuestion",
                     type: 'GET',
                 },
                 columns: [
-                    {data: 'id'},
-                    {data: 'questionContent'},
-                    {data: 'module_id'},
-                    {data: 'questionType'},
-                    {data: 'dateCreated'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false}
+                    { data: 'id' },
+                    { data: 'questionContent' },
+                    { data: 'moduleId' },
+                    { data: 'questionType' },
+                    { data: 'dateCreated' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false }
                 ],
             });
         });
@@ -194,8 +189,10 @@
         $('#question-type').change(function () {
             if ($('#question-type').val() === '2')
                 $('input:radio').prop('type', 'checkbox');
-            else
+            else {
+                isCheckBox = true;
                 $('input:checkbox').prop('type', 'radio');
+            }
         });
 
         //Delete button
@@ -203,8 +200,11 @@
             let questionID = $(this).data("id");
             if (confirm('Bạn muốn xóa câu hỏi ' + questionID + ' ?') === true)
                 $.ajax({
-                    url: '{!! url('tn-admin-th/questions/delete') !!}' + '/' + questionID,
+                    url: "https://localhost:5001/api/question/delete/" + questionID,
                     type: "GET",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    },
                     success: function (data) {
                         let oTable = $('#questions-table').dataTable();
                         oTable.fnDraw(false);
@@ -212,8 +212,8 @@
                     error: function (data) {
                         console.log('Error: ', data);
                     }
-                });
-        });
+                    });
+            });
 
         // Create new question button
         $('#create-new-question').click(function () {
@@ -222,6 +222,10 @@
             $('#questionForm').trigger("reset");
             $('#question-modal-title').html("Thêm câu hỏi mới");
             $('#question-modal').modal('show');
+            $('#questionForm').attr({
+                action: "https://localhost:5001/api/question/create",
+                method: "POST"
+            });
         });
 
         // Edit button
@@ -229,40 +233,39 @@
             let questionID = $(this).data("id");
             $('#btn-switch-mass-create').hide();
             $('#question-modal').modal('show');
-            $('#questionFormCreate').attr({
-                id: 'questionFormEdit',
-                name: 'questionFormEdit',
-                action: '{!! url('tn-admin-th/questions/edit') !!}' + '/' + questionID,
+            $('#questionForm').attr({
+                action: "https://localhost:5001/api/question/update/" + questionID,
                 method: "POST"
             });
             $('#question-modal-title').html("Sửa câu hỏi");
             $('#question_id').val(questionID);
             $.ajax({
                 type: "get",
-                url: '{!! url('tn-admin-th/questions/edit') !!}' + '/' + questionID,
+                url: "https://localhost:5001/api/question/getbyid/" + questionID,
                 success: function (data) {
-                    $('#question-content').val(data.questionContent);
-                    $('#question-module').val(data.module_id);
-                    $('#question-type').val(data.questionType);
-                    $('#answer-A').val(data.A);
-                    $('#answer-B').val(data.B);
-                    $('#answer-C').val(data.C);
-                    $('#answer-D').val(data.D);
-                    if (data.questionType === 1) {
+                    console.log(data);
+                    $('#question-content').val(data.resultObject.questionContent);
+                    $('#question-module').val(data.resultObject.moduleId);
+                    $('#question-type').val(data.resultObject.questionType);
+                    $('#answer-A').val(data.resultObject.a);
+                    $('#answer-B').val(data.resultObject.b);
+                    $('#answer-C').val(data.resultObject.c);
+                    $('#answer-D').val(data.resultObject.d);
+                    if (data.resultObject.questionType === 1) {
                         $('input:checkbox').prop('type', 'radio');
                         let index = 0;
-                        if (data.correctAnswers.length === 1) {
-                            data.correctAnswers === 'A' ? index = 0 : '';
-                            data.correctAnswers === 'B' ? index = 1 : '';
-                            data.correctAnswers === 'C' ? index = 2 : '';
-                            data.correctAnswers === 'D' ? index = 3 : '';
-                            let radio = document.getElementsByName('correct-answer')[index];
+                        if (data.resultObject.correctAnswers.length === 1) {
+                            data.resultObject.correctAnswers === 'A' ? index = 0 : '';
+                            data.resultObject.correctAnswers === 'B' ? index = 1 : '';
+                            data.resultObject.correctAnswers === 'C' ? index = 2 : '';
+                            data.resultObject.correctAnswers === 'D' ? index = 3 : '';
+                            let radio = document.getElementsByName('Answer')[index];
                             radio.checked = true;
                         }
                     } else {
                         $('input:radio').prop('type', 'checkbox');
-                        let answerArr = data.correctAnswers.split(',');
-                        let checkbox = document.getElementsByName('correct-answer');
+                        let answerArr = data.resultObject.correctAnswers.split(',');
+                        let checkbox = document.getElementsByName('Answer');
                         for (let i = 0; i < checkbox.length; i++)
                             checkbox[i].checked = false;
                         $.each(answerArr, function (index, value) {
@@ -271,11 +274,11 @@
                             value === 'B' ? id = 1 : '';
                             value === 'C' ? id = 2 : '';
                             value === 'D' ? id = 3 : '';
-                            checkbox = document.getElementsByName('correct-answer')[id];
+                            checkbox = document.getElementsByName('Answer')[id];
                             checkbox.checked = true;
                         });
                     }
-                    $('#question-explain').val(data.answerExplain);
+                    $('#question-explain').val(data.resultObject.answerExplain);
                 },
                 error: function (data) {
                     console.log('Error: ', data);
@@ -286,50 +289,45 @@
         // Save button
         $('#questionForm').validate({
             submitHandler: function (form) {
-                $('#btn-save').html('<i class="fa fa-spin fa-spinner"></i>');
+                var url = $("#questionForm").attr("action");
+                $('#btn-save').html('Loading..');
                 let answerArr = [];
-                let checks = document.getElementsByName('correct-answer');
+                let checks = document.getElementsByName('Answer');
                 for (let i = 0; i < checks.length; i++) {
                     if (checks[i].checked === true) {
                         answerArr.push(checks[i].value);
                     }
                 }
-                let answerStr = answerArr.join();
-                let formData = {
-                    'question_id': $('#question_id').val(),
-                    'question-content': $('#question-content').val(),
-                    'question-module': $('#question-module').val(),
-                    'question-type': $('#question-type').val(),
-                    'answer-A': $('#answer-A').val(),
-                    'answer-B': $('#answer-B').val(),
-                    'answer-C': $('#answer-C').val(),
-                    'answer-D': $('#answer-D').val(),
-                    'correct-answer': answerStr,
-                    'question-explain': $('#question-explain').val()
-                };
+                let answerStr = answerArr.join(",");
+                $('#CorrectAnswers').val(answerStr);
                 $.ajax({
-                    data: formData,
+                    data: $('#questionForm').serialize(),
                     type: "post",
-                    url: '{!! route('storeQuestion') !!}',
+                    url: url,
                     dataType: 'json',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                    },
                     success: function (data) {
                         $('#questionForm').trigger('reset');
-                        if(mass_create_status===false)
+                        if (mass_create_status === false)
                             $('#question-modal').modal('hide');
                         $('#btn-save').html('Lưu');
                         let oTable = $('#questions-table').dataTable();
                         oTable.fnDraw(false);
                     },
                     error: function (data) {
+
                         bootbox.alert({
-                            message: 'Lỗi: <p>'+ data.responseJSON.message +'</p>',
-                            backdrop:true
+                            message: 'Lỗi: <p>' + data.message + '</p>',
+                            backdrop: true
                         });
-                        console.log('Error: ', data);
                         $('#btn-save').html('Lưu');
                     }
                 });
             }
         });
-</script>
+    </script>
+    <script src="~/admin-assets/js/dataTables/jquery.dataTables.min.js"></script>
+    <script src="~/admin-assets/js/dataTables/dataTables.bootstrap.min.js"></script>
 }

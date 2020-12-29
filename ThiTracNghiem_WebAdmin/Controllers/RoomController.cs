@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace ThiTracNghiem_WebAdmin.Controllers
 {
-    public class QuestionController : BaseController
+    public class RoomController : Controller
     {
-        public QuestionController( IConfiguration configuration) : base(configuration)
-        {
-        }
-        public IActionResult Questions()
-        {
-            ViewBag.Title = "Câu hỏi";
+        public IActionResult ExamInRoom() {
+            ViewBag.Title = "Đề thi";
             return View();
         }
+        public IActionResult Rooms()
+        {
+            return View();
+        }
+
+
     }
 }

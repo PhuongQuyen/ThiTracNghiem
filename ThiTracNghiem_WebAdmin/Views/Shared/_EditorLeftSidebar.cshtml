@@ -1,0 +1,5 @@
+﻿@using Microsoft.AspNetCore.Http.Extensions
+@{
+    var url = @Context.Request.GetDisplayUrl();
+    string[] arrListUrl = url.Split('/');
+}
