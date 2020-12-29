@@ -253,7 +253,7 @@
                     type: $("#examForm").attr("method"),
                     url: url,
                     dataType: 'json',
-                    contentType:''
+                    contentType:'application/json',
                     success: function (data) {
                         $('#examForm').trigger('reset');
                         $('#exam-modal').modal('hide');
