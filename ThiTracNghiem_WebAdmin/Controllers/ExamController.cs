@@ -19,6 +19,7 @@ namespace ThiTracNghiem_WebAdmin.Controllers
         }
         public IActionResult Modules()
         {
+            ViewBag.Title = "Module";
             return View();
         }
 
