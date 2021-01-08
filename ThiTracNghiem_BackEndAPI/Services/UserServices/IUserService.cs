@@ -18,5 +18,6 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
         Task<ApiResult<UserViewModel>> GetByUserName(string userName);
         Task<ApiResult<bool>> Delete(int userId);
         Task<ApiResult<bool>> Update(RegisterRequest request, int userId);
+        Task<int> GetUserCount();
     }
 }

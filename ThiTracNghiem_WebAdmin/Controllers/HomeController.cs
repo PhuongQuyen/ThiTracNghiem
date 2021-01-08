@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ using ThiTracNghiem_WebAdmin.Models;
 
 namespace ThiTracNghiem_WebAdmin.Controllers
 {
+   
     public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,13 +20,13 @@ namespace ThiTracNghiem_WebAdmin.Controllers
         {
             _logger = logger;
         }
-
+        [Authorize(Roles = "3")]
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Forbidden()
         {
             return View();
         }

@@ -78,7 +78,7 @@ namespace ThiTracNghiem_WebAdmin.Controllers
                     authProperties);
             switch (roleId)
             {
-                case "2": return RedirectToAction("index", "home");
+                case "2": return RedirectToAction("exams", "exam");
                 case "3": return RedirectToAction("index", "home");
                 case "4": return RedirectToAction("index", "creator");
                 default: return RedirectToAction("index", "home");

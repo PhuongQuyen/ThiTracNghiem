@@ -16,7 +16,6 @@ namespace ThiTracNghiem_ViewModel.Rooms
         public int UserCounts { get; set; }
         public byte? PublicRoom { get; set; }
         public string Action { get; set; }
-       
-     
+        public int ExamId { get; set; }
     }
 }

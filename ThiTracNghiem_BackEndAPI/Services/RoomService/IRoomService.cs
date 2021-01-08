@@ -9,10 +9,12 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
 {
     public interface IRoomService
     {
-        Task<ApiResult<RoomRequest>> GetById(int roleId);
-        Task<ApiResult<bool>> Delete(int roleId);
-        Task<ApiResult<bool>> Update(RoomRequest request, int roleId);
+        Task<ApiResult<RoomViewModel>> GetById(int roomId);
+        Task<ApiResult<bool>> Delete(int roomId);
+        Task<ApiResult<bool>> Update(RoomRequest request, int roomId);
         Task<ApiResult<string>> Create(RoomRequest request);
         Task<DatatableResult<List<RoomViewModel>>> GetListRoom(DatatableRequestBase requestBase);
+        Task<ApiResult<bool>> DeleteExamInRoom(int roomId);
+
     }
 }

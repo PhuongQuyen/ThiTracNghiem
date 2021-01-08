@@ -120,21 +120,15 @@
                             <ul class="nav" id="side-menu">
                                 <li class="sidebar-search">
                                 <li>
-                                    <a asp-action="exams" asp-controller="editor"
+                                    <a asp-action="exams" asp-controller="exam"
                                        class="@((arrListUrl[3]== "exams" || arrListUrl[3]=="")?"active":"")">
                                         <i class="fa fa-newspaper-o"></i> Đề thi
                                     </a>
                                 </li>
                                 <li>
-                                    <a asp-action="questions" asp-controller="editor"
+                                    <a asp-action="questions" asp-controller="question"
                                        class="@((arrListUrl[3]== "questions")?"active":"")">
                                         <i class="fa fa-question"></i> Câu hỏi
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="posts" asp-controller="editor"
-                                       class="@((arrListUrl[3]== "posts")?"active":"")">
-                                        <i class="fa fa-paragraph"></i> Bài viết
                                     </a>
                                 </li>
                             </ul>

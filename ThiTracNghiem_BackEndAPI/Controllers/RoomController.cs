@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ThiTracNghiem_BackEndAPI.Models;
 using ThiTracNghiem_BackEndAPI.Services.RoomService;
 using ThiTracNghiem_ViewModel.Commons;
 using ThiTracNghiem_ViewModel.Rooms;
@@ -73,6 +74,12 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
             var result = await _roomService.GetListRoom(requestBase);
             return Ok(result);
         }
-     
+        [HttpGet("DeleteExamInRoom/{roomId}")]
+        public async Task<IActionResult> DeleteExamInRoom([FromRoute] int roomId)
+        {
+            var result = await _roomService.DeleteExamInRoom(roomId);
+            if (result.IsSuccessed == false) return Ok(result);
+            return Ok(result);
+        }
     }
 }

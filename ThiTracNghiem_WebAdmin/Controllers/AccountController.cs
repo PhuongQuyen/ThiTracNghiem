@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ThiTracNghiem_WebAdmin.Services.Users;
 
 namespace ThiTracNghiem_WebAdmin.Controllers
 {
+    [Authorize(Roles = "3")]
     public class AccountController : BaseController
     {
         private readonly IUserAPIClient _userAPIClient;

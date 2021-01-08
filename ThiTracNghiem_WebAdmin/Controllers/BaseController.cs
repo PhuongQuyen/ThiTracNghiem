@@ -16,7 +16,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ThiTracNghiem_WebAdmin.Controllers
 {
-    [Authorize]
     public class BaseController : Controller
     {
         protected readonly IConfiguration _configuration;
