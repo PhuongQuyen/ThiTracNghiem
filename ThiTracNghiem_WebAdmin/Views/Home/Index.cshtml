@@ -1,4 +1,9 @@
-﻿@section Header{
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var token = HttpContextAccessor.HttpContext.Session.GetString("Token");
+}
+@section Header{
     <link href="~/admin-assets/css/morris.css" rel="stylesheet" />
 }
 
@@ -18,7 +23,7 @@
                         <i class="fa fa-paragraph fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">{{12}}</div>
+                        <div class="huge">12</div>
                         <div>Bài viết</div>
                     </div>
                 </div>
@@ -40,7 +45,7 @@
                         <i class="fa fa-user fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">22</div>
+                        <div class="huge" id="userCount"></div>
                         <div>Tài khoản</div>
                     </div>
                 </div>
@@ -62,7 +67,7 @@
                         <i class="fa fa-newspaper-o fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">21</div>
+                        <div class="huge" id="examCount"></div>
                         <div>Đề thi</div>
                     </div>
                 </div>
@@ -84,7 +89,7 @@
                         <i class="fa fa-question-circle fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">22</div>
+                        <div class="huge" id="questionCount"></div>
                         <div>Câu hỏi</div>
                     </div>
                 </div>
@@ -119,7 +124,20 @@
                 <i class="fa fa-pie-chart fa-fw"></i> 5 bài làm mới nhất
             </div>
             <!-- /.panel-heading -->
-            
+            <div class="panel-body">
+                <table class="table table-striped table-hover table-responsive">
+                    <tr>
+                        <td><strong>Mã bài làm</strong></td>
+                        <td><strong>ID - Tên người làm</strong></td>
+                        <td><strong>Tên đề</strong></td>
+                        <td><strong>Số câu trong đề</strong></td>
+                        <td><strong>Số câu đúng</strong></td>
+                        <td><strong>Ngày thực hiện</strong></td>
+                    </tr>
+                    <tbody id="panelBody">
+                    </tbody>
+                </table>
+            </div>
             <!-- /.panel-body -->
         </div>
         <!-- /.panel -->
@@ -133,7 +151,7 @@
                         <i class="fa fa-pencil-square fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge">22</div>
+                        <div class="huge" id="scoreCount"></div>
                         <div>Lượt thi</div>
                     </div>
                 </div>
@@ -160,35 +178,54 @@
     <script src="~/admin-assets/js/flot/jquery.flot.time.js"></script>
     <script src="~/admin-assets/js/flot/jquery.flot.tooltip.min.js"></script>
 
-    @*<script>
+    <script>
         $(document).ready(function () {
-            var data = [
-                {
-                    label: "{{$totalQuestionsModule1}} Câu - CNTT",
-                    data: {{$totalQuestionsModule1}}
+             var token = '@token';
+            $.ajax({
+                type: "get",
+                url: 'https://localhost:5001/api/dashboard/getInfo',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 },
-                {
-                    label: "{{$totalQuestionsModule2}} Câu - Hệ điều hành",
-                    data: {{$totalQuestionsModule2}}
+                success: function (data) {
+                    console.log(data);
+                    $('#userCount').text(data.userCountData);
+                    $('#examCount').text(data.examCountData);
+                    $('#questionCount').text(data.questionCountData);
+                    $('#scoreCount').text(data.scoreCountData);
+                    showFiveScore(data.topFiveData);
+                    showChart(data.questionModule);
                 },
-                {
-                    label: "{{$totalQuestionsModule3}} Câu - Internet",
-                    data: {{$totalQuestionsModule3}}
-                },
-                {
-                    label: "{{$totalQuestionsModule4}} Câu - Word",
-                    data: {{$totalQuestionsModule4}}
-                },
-                {
-                    label: "{{$totalQuestionsModule5}} Câu - Excel",
-                    data: {{$totalQuestionsModule5}}
-                },
-                {
-                    label: "{{$totalQuestionsModule6}} Câu - Powerpoint",
-                    data: {{$totalQuestionsModule6}}
-                },
+                error: function (data) {
+                    console.log('Error: ', data);
+                }
+            });
+        });
+        function showFiveScore(listScore) {
+            for (var i = 0; i < listScore.length; i++) {
+                $("#panelBody").append(
+                    `<tr>
+                    <td>${listScore[i].examId}</td>
+                    <td>${listScore[i].userName}</td>
+                    <td>
+                        <a href="/exams/${listScore[i].examId}">${listScore[i].examTitle}</a>
+                    </td>
+                    <td>${listScore[i].totalQuestions}</td>
+                    <td>${listScore[i].totalQuestionsCorrect}</td>
+                    <td>${listScore[i].testDate}</td>
+                </tr>`);
+            }
+        }
 
-            ];
+        function showChart(listQuestionModule) {
+            var data = new Array();
+            for (var i = 0; i < listQuestionModule.length; i++) {
+                var object = {
+                    label: listQuestionModule[i].moduleName + " - " + listQuestionModule[i].count,
+                    data: listQuestionModule[i].count
+                }
+                data.push(object);
+            }
             var plotObj = $.plot($("#questions-bank-chart"), data, {
                 series: {
                     pie: {
@@ -208,6 +245,7 @@
                     defaultTheme: false
                 }
             });
-        });
-    </script>*@
+        }
+         
+    </script>
 }

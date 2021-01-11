@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ThiTracNghiem_ViewModel.Commons;
 using ThiTracNghiem_ViewModel.Exams;
 using ThiTracNghiem_BackEndAPI.Models;
+using ThiTracNghiem_ViewModel.Rooms;
 
 namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
 {
@@ -15,5 +16,8 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
         Task<ApiResult<bool>> Delete(int examId);
         Task<ApiResult<bool>> Update(ExamViewModel request, int examId);
         Task<ApiResult<string>> Create(ExamViewModel request);
+        Task<int> GetExamCount();
+        Task<ApiResult<ExamInRoomViewModel>> GetByRoomId(int roomId); //creator
+    
     }
 }

@@ -162,7 +162,7 @@
                 columns: [
                     { data: 'id' },
                     { data: 'questionContent' },
-                    { data: 'moduleId' },
+                    { data: 'moduleName' },
                     { data: 'questionType' },
                     { data: 'dateCreated' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
@@ -243,7 +243,6 @@
                 type: "get",
                 url: "https://localhost:5001/api/question/getbyid/" + questionID,
                 success: function (data) {
-                    console.log(data);
                     $('#question-content').val(data.resultObject.questionContent);
                     $('#question-module').val(data.resultObject.moduleId);
                     $('#question-type').val(data.resultObject.questionType);

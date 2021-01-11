@@ -69,7 +69,20 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
             return new ApiResultErrors<bool>("Can not detete");
         }
 
-        public async Task<ApiResult<RoomRequest>> GetById(int roomId)
+        public async Task<ApiResult<bool>> DeleteExamInRoom(int roomId)
+        {
+            var room = await _context.Rooms.FindAsync(roomId);
+            if (room == null) return new ApiResultErrors<bool>($"Can not find role with id: {roomId}");
+            room.ExamId = 0;
+            var numRowChange = await _context.SaveChangesAsync();
+            if (numRowChange > 0)
+            {
+                return new ApiResultSuccess<bool>();
+            }
+            return new ApiResultErrors<bool>("Can not detete");
+        }
+
+        public async Task<ApiResult<RoomViewModel>> GetById(int roomId)
         {
             var room = await _context.Rooms.FindAsync(roomId);
             var exam = await _context.Exams.FindAsync(room.ExamId);
@@ -77,17 +90,18 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
             var userCount = await _context.Joinroom.Where(q => q.RoomId == room.Id).ToListAsync();
             if (room == null)
             {
-                return new ApiResultErrors<RoomRequest>("not found");
+                return new ApiResultErrors<RoomViewModel>("not found");
             }
-            var roomRequest = new RoomRequest()
+            var roomViewModel = new RoomViewModel()
             {
                 RoomName = room.RoomName,
                 TotalQuestions = exam.TotalQuestions,
                 TimeLimit = exam.TimeLimit,
                 PublicRoom = room.PublicRoom,
-                Description = room.Description
+                ExamId = room.ExamId,
+                RoomCode = room.RoomCode
             };
-            return new ApiResultSuccess<RoomRequest>(roomRequest);
+            return new ApiResultSuccess<RoomViewModel>(roomViewModel);
         }
 
         public async Task<DatatableResult<List<RoomViewModel>>> GetListRoom(DatatableRequestBase request)
@@ -135,7 +149,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
                   {
                       Id = x.r.Id,
                       RoomCode = x.r.RoomCode,
-                      RoomName = x.r.RoomName,
+                      RoomName = String.Format("<a href='/creator/examinroom/{0}'>{1}</ a>",x.r.Id, x.r.RoomName),
                       TotalQuestions = x.e.TotalQuestions,
                       TimeLimit = x.e.TimeLimit,
                       PublicRoom = x.r.PublicRoom,

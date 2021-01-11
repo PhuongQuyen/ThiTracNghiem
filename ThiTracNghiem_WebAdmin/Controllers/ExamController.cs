@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace ThiTracNghiem_WebAdmin.Controllers
 {
+    [Authorize(Roles = "3,2")]
     public class ExamController : BaseController
     {
         public ExamController(IConfiguration configuration) : base(configuration)
@@ -19,6 +21,7 @@ namespace ThiTracNghiem_WebAdmin.Controllers
         }
         public IActionResult Modules()
         {
+            ViewBag.Title = "Module";
             return View();
         }
 
@@ -26,10 +29,10 @@ namespace ThiTracNghiem_WebAdmin.Controllers
         {
             return View();
         }
-        
        
-        public IActionResult SingleExam()
+        public IActionResult SingleExam(int examId)
         {
+            ViewBag.ExamId = examId;
             return View();
         }
         

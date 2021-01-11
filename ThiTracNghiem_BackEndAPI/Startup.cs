@@ -7,10 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using ThiTracNghiem_BackEndAPI.Models;
+using ThiTracNghiem_BackEndAPI.Services.CategoriesServices;
 using ThiTracNghiem_BackEndAPI.Services.ExamServices;
+using ThiTracNghiem_BackEndAPI.Services.ModuleService;
 using ThiTracNghiem_BackEndAPI.Services.QuestionServices;
 using ThiTracNghiem_BackEndAPI.Services.RoleServices;
 using ThiTracNghiem_BackEndAPI.Services.RoomService;
+using ThiTracNghiem_BackEndAPI.Services.ScoreService;
 using ThiTracNghiem_BackEndAPI.Services.UserServices;
 
 namespace ThiTracNghiem_BackEndAPI
@@ -43,6 +46,9 @@ namespace ThiTracNghiem_BackEndAPI
             services.AddTransient<IExamService, ExamService>();
             services.AddTransient<IQuestionService, QuestionService>();
             services.AddTransient<IRoomService, RoomService>();
+            services.AddTransient<IModuleService, ModuleService>();
+            services.AddTransient<ICategoriesServie, CategoriesService>();
+            services.AddTransient<IScoreService, ScoreService>();
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
              );

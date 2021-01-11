@@ -37,7 +37,7 @@ namespace ThiTracNghiem_WebAdmin
                .AddCookie(options =>
                {
                    options.LoginPath = "/Login/index/";
-                   options.AccessDeniedPath = "/User/Forbidden/";
+                   options.AccessDeniedPath = "/Home/Forbidden/";
                });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -77,9 +77,15 @@ namespace ThiTracNghiem_WebAdmin
             app.UseSession();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(name: "creator",
+                    pattern: "creator/examinroom/{roomId?}",
+                    defaults: new { controller = "creator", action = "examinroom" });
+                endpoints.MapControllerRoute(name: "exam",
+                    pattern: "exam/singleExam/{examId?}",
+                    defaults: new { controller = "exam", action = "singleExam" });
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Login}/{action=Index}");
             });
         }
     }

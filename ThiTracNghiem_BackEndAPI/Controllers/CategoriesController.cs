@@ -5,58 +5,47 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ThiTracNghiem_BackEndAPI.Models;
-using ThiTracNghiem_BackEndAPI.Services.RoomService;
+using ThiTracNghiem_BackEndAPI.Services.CategoriesServices;
+using ThiTracNghiem_ViewModel.Blog;
 using ThiTracNghiem_ViewModel.Commons;
-using ThiTracNghiem_ViewModel.Rooms;
 
 namespace ThiTracNghiem_BackEndAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class RoomController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
-        private readonly IRoomService _roomService;
-        public RoomController(IRoomService roomService)
+        private readonly ICategoriesServie _categoriesServies;
+        public CategoriesController(ICategoriesServie categoriesServies)
         {
-            _roomService = roomService;
+            _categoriesServies = categoriesServies;
         }
-
-        [HttpGet("GetById/{roomId}")]
-        public async Task<IActionResult> GetById(int roomId)
+        [HttpGet("GetById/{categoriesId}")]
+        public async Task<IActionResult> GetById(int categoriesId)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roomService.GetById(roomId);
+            var result = await _categoriesServies.GetById(categoriesId);
             return Ok(result);
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromForm] RoomRequest request)
+        public async Task<IActionResult> Create([FromForm] CategoriesRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roomService.Create(request);
+            var result = await _categoriesServies.Create(request);
             return Ok(result);
         }
 
-        [HttpPost("update/{roomId}")]
-        public async Task<IActionResult> Update([FromForm] RoomRequest request, int roomId)
+        [HttpPost("update/{categoriesId}")]
+        public async Task<IActionResult> Update([FromForm] CategoriesRequest request, int categoriesId)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roomService.Update(request, roomId);
+            var result = await _categoriesServies.Update(request, categoriesId);
             return Ok(result);
         }
-
-        [HttpGet("delete/{roomId}")]
-        public async Task<IActionResult> Delete([FromRoute] int roomId)
-        {
-            var result = await _roomService.Delete(roomId);
-            if (result.IsSuccessed == false) return Ok(result);
-            return Ok(result);
-        }
-
-        [HttpGet("GetListRoom")]
-        public async Task<IActionResult> GetListRoom()
+        [HttpGet("getListCategories")]
+        public async Task<IActionResult> getListCategories()
         {
             var start = Request.Query["start"].FirstOrDefault();
             var length = Request.Query["length"].FirstOrDefault();
@@ -71,13 +60,13 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
             };
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roomService.GetListRoom(requestBase);
+            var result = await _categoriesServies.GetListCategories(requestBase);
             return Ok(result);
         }
-        [HttpGet("DeleteExamInRoom/{roomId}")]
-        public async Task<IActionResult> DeleteExamInRoom([FromRoute] int roomId)
+        [HttpGet("delete/{categoriesId}")]
+        public async Task<IActionResult> Delete([FromRoute] int categoriesId)
         {
-            var result = await _roomService.DeleteExamInRoom(roomId);
+            var result = await _categoriesServies.Delete(categoriesId);
             if (result.IsSuccessed == false) return Ok(result);
             return Ok(result);
         }

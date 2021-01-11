@@ -49,7 +49,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
             {
                 return new ApiResultErrors<bool>("Not found");
             }
-            _context.Exams.Remove(exam);
+            exam.Status = 0;
             var numRowChange = await _context.SaveChangesAsync();
             if (numRowChange > 0)
             {
@@ -60,34 +60,71 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
 
         public async Task<ApiResult<ExamViewModel>> GetById(int examId)
         {
-            var exam = await _context.Exams.FindAsync(examId);
-            var examViewModel = new ExamViewModel()
+            var query = from e in _context.Exams where e.Id == examId
+                        join t in _context.Examtypes on e.ExamtypeId equals t.Id
+                        select new { e, t };
+            var data = await query
+              .Select(x => new ExamViewModel()
             {
-                Id = exam.Id,
-                ExamTitle = exam.ExamTitle,
-                ExamDescription = exam.ExamDescription,
-                ExamtypeId = exam.ExamtypeId,
-                TotalQuestions = exam.TotalQuestions,
-                TimeLimit = exam.TimeLimit,
-                Status = exam.Status
-            };
-            return new ApiResultSuccess<ExamViewModel>(examViewModel);
+                Id = x.e.Id,
+                ExamTitle = x.e.ExamTitle,
+                ExamDescription = x.e.ExamDescription,
+                ExamtypeId = x.e.ExamtypeId,
+                TotalQuestions = x.e.TotalQuestions,
+                TimeLimit = x.e.TimeLimit,
+                Status = x.e.Status,
+                ExamTypeTitle = x.t.TypeTitle
+            }).FirstOrDefaultAsync();
+            return new ApiResultSuccess<ExamViewModel>(data);
+        }
+
+        public async Task<ApiResult<ExamInRoomViewModel>> GetByRoomId(int roomId)
+        {
+            var exam = from r in _context.Rooms where r.Id == roomId
+                       join e in _context.Exams on r.ExamId equals e.Id
+                       select new { r, e };
+
+            var data = await exam
+               .Select(x => new ExamInRoomViewModel()
+               {
+                   Id = x.e.Id,
+                   ExamTitle = x.e.ExamTitle,
+                   ExamDescription = x.e.ExamDescription,
+                   TotalQuestions = x.e.TotalQuestions,
+                   TimeLimit = x.e.TimeLimit,
+                   Status = x.e.Status,
+                   DateCreated = x.e.DateCreated,
+                   IdRoom = x.r.Id,
+                   RoomName = x.r.RoomName,
+                   RoomCode = x.r.RoomCode,
+                   Action = String.Format("<a href = 'javascript:void(0)' data-toggle = 'tooltip' id = 'edit' data-id = '{0}' data-original-title='Edit' class='btn mr-5 btn-xs btn-warning btn-edit'><i class='glyphicon glyphicon-edit'></i> Sửa</a><a href = 'javascript:void(0)' data-toggle='tooltip' id='delete' data-id='{1}' data-original-title='Delete' class='btn btn-xs btn-danger btn-delete'><i class='glyphicon glyphicon-trash'></i> Xóa</a>", x.e.Id, x.e.Id)
+               }
+               ).FirstOrDefaultAsync();
+
+            return new ApiResultSuccess<ExamInRoomViewModel>(data);
+        }
+
+        public async Task<int> GetExamCount()
+        {
+            return await _context.Exams.CountAsync();
         }
 
         public async Task<DatatableResult<List<ExamViewModel>>> GetListExam(DatatableRequestBase request)
         {
-            var query = from e in _context.Exams select e;
+            var query = from e in _context.Exams
+                        join t in _context.Examtypes on e.ExamtypeId equals t.Id
+                        select new { e, t };
             int totalRow = await query.CountAsync();
             if (request.sortColumnDirection == "desc")
             {
                 switch (request.sortColumn)
                 {
-                    case "0": query = query.OrderByDescending(e => e.Id); break;
-                    case "1": query = query.OrderByDescending(e => e.ExamTitle); break;
-                    case "2": query = query.OrderByDescending(e => e.TotalQuestions); break;
-                    case "3": query = query.OrderByDescending(e => e.TimeLimit); break;
-                    case "4": query = query.OrderByDescending(e => e.Status); break;
-                    case "5": query = query.OrderByDescending(e => e.DateCreated); break;
+                    case "0": query = query.OrderByDescending(e => e.e.Id); break;
+                    case "1": query = query.OrderByDescending(e => e.e.ExamTitle); break;
+                    case "2": query = query.OrderByDescending(e => e.e.TotalQuestions); break;
+                    case "3": query = query.OrderByDescending(e => e.e.TimeLimit); break;
+                    case "4": query = query.OrderByDescending(e => e.e.Status); break;
+                    case "5": query = query.OrderByDescending(e => e.e.DateCreated); break;
                 }
 
             }
@@ -95,12 +132,12 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
             {
                 switch (request.sortColumn)
                 {
-                    case "0": query = query.OrderBy(e => e.Id); break;
-                    case "1": query = query.OrderBy(e => e.ExamTitle); break;
-                    case "2": query = query.OrderBy(e => e.TotalQuestions); break;
-                    case "3": query = query.OrderBy(e => e.TimeLimit); break;
-                    case "4": query = query.OrderBy(e => e.Status); break;
-                    case "5": query = query.OrderBy(e => e.DateCreated); break;
+                    case "0": query = query.OrderBy(e => e.e.Id); break;
+                    case "1": query = query.OrderBy(e => e.e.ExamTitle); break;
+                    case "2": query = query.OrderBy(e => e.e.TotalQuestions); break;
+                    case "3": query = query.OrderBy(e => e.e.TimeLimit); break;
+                    case "4": query = query.OrderBy(e => e.e.Status); break;
+                    case "5": query = query.OrderBy(e => e.e.DateCreated); break;
                 }
 
             }
@@ -108,14 +145,15 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
                 .Take(request.PageSize)
                   .Select(x => new ExamViewModel()
                   {
-                      Id = x.Id,
-                      ExamTitle = x.ExamTitle,
-                      ExamDescription = x.ExamDescription,
-                      TotalQuestions = x.TotalQuestions,
-                      TimeLimit = x.TimeLimit,
-                      Status = x.Status,
-                      DateCreated = x.DateCreated,
-                      Action = String.Format("<a href = 'javascript:void(0)' data-toggle = 'tooltip' id = 'edit' data-id = '{0}' data-original-title='Edit' class='btn mr-5 btn-xs btn-warning btn-edit'><i class='glyphicon glyphicon-edit'></i> Sửa</a><a href = 'javascript:void(0)' data-toggle='tooltip' id='delete' data-id='{1}' data-original-title='Delete' class='btn btn-xs btn-danger btn-delete'><i class='glyphicon glyphicon-trash'></i> Xóa</a>", x.Id, x.Id)
+                      Id = x.e.Id,
+                      ExamTitle = x.e.ExamTitle,
+                      ExamDescription = x.e.ExamDescription,
+                      TotalQuestions = x.e.TotalQuestions,
+                      TimeLimit = x.e.TimeLimit,
+                      Status = x.e.Status,
+                      DateCreated = x.e.DateCreated,
+                      ExamTypeTitle = x.t.TypeTitle,
+                      Action = String.Format("<a href = 'javascript:void(0)' data-toggle = 'tooltip' id = 'edit' data-id = '{0}' data-original-title='Edit' class='btn mr-5 btn-xs btn-warning btn-edit'><i class='glyphicon glyphicon-edit'></i> Sửa</a><a href = 'javascript:void(0)' data-toggle='tooltip' id='delete' data-id='{1}' data-original-title='Delete' class='btn btn-xs btn-danger btn-delete'><i class='glyphicon glyphicon-trash'></i> Xóa</a>", x.e.Id, x.e.Id)
                   }
                   ).ToListAsync();
             var result = new DatatableResult<List<ExamViewModel>>()

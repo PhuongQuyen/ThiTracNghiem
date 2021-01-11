@@ -161,6 +161,11 @@ namespace ThiTracNghiem_BackEndAPI.Services.UserServices
             throw new NotImplementedException();
         }
 
+        public async Task<int> GetUserCount()
+        {
+            return await _context.Users.CountAsync();
+        }
+
         public async Task<ApiResult<string>> Register(RegisterRequest request)
         {
             var email = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.Active == 1);

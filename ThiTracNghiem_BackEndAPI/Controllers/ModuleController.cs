@@ -5,58 +5,47 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ThiTracNghiem_BackEndAPI.Models;
-using ThiTracNghiem_BackEndAPI.Services.RoomService;
+using ThiTracNghiem_BackEndAPI.Services.ModuleService;
 using ThiTracNghiem_ViewModel.Commons;
-using ThiTracNghiem_ViewModel.Rooms;
+using ThiTracNghiem_ViewModel.Exams;
 
 namespace ThiTracNghiem_BackEndAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class RoomController : ControllerBase
+    public class ModuleController : ControllerBase
     {
-        private readonly IRoomService _roomService;
-        public RoomController(IRoomService roomService)
+        private readonly IModuleService _moduleService;
+        public ModuleController(IModuleService moduleService)
         {
-            _roomService = roomService;
+            _moduleService = moduleService;
         }
-
-        [HttpGet("GetById/{roomId}")]
-        public async Task<IActionResult> GetById(int roomId)
+        [HttpGet("GetById/{moduleID}")]
+        public async Task<IActionResult> GetById(int moduleID)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roomService.GetById(roomId);
+            var result = await _moduleService.GetById(moduleID);
             return Ok(result);
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromForm] RoomRequest request)
+        public async Task<IActionResult> Create([FromForm] ModuleRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roomService.Create(request);
+            var result = await _moduleService.Create(request);
             return Ok(result);
         }
 
-        [HttpPost("update/{roomId}")]
-        public async Task<IActionResult> Update([FromForm] RoomRequest request, int roomId)
+        [HttpPost("update/{moduleID}")]
+        public async Task<IActionResult> Update([FromForm] ModuleRequest request, int moduleID)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roomService.Update(request, roomId);
+            var result = await _moduleService.Update(request, moduleID);
             return Ok(result);
         }
-
-        [HttpGet("delete/{roomId}")]
-        public async Task<IActionResult> Delete([FromRoute] int roomId)
-        {
-            var result = await _roomService.Delete(roomId);
-            if (result.IsSuccessed == false) return Ok(result);
-            return Ok(result);
-        }
-
-        [HttpGet("GetListRoom")]
-        public async Task<IActionResult> GetListRoom()
+        [HttpGet("getListModule")]
+        public async Task<IActionResult> getListModule()
         {
             var start = Request.Query["start"].FirstOrDefault();
             var length = Request.Query["length"].FirstOrDefault();
@@ -71,13 +60,13 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
             };
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var result = await _roomService.GetListRoom(requestBase);
+            var result = await _moduleService.GetListModule(requestBase);
             return Ok(result);
         }
-        [HttpGet("DeleteExamInRoom/{roomId}")]
-        public async Task<IActionResult> DeleteExamInRoom([FromRoute] int roomId)
+        [HttpGet("delete/{moduleID}")]
+        public async Task<IActionResult> Delete([FromRoute] int moduleID)
         {
-            var result = await _roomService.DeleteExamInRoom(roomId);
+            var result = await _moduleService.Delete(moduleID);
             if (result.IsSuccessed == false) return Ok(result);
             return Ok(result);
         }

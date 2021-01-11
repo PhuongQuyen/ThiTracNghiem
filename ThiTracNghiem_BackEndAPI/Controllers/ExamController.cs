@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ThiTracNghiem_BackEndAPI.Services.ExamServices;
+using ThiTracNghiem_BackEndAPI.Services.QuestionServices;
 using ThiTracNghiem_ViewModel.Commons;
 using ThiTracNghiem_ViewModel.Exams;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,9 +17,11 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
     public class ExamController : ControllerBase
     {
         private readonly IExamService _examService;
-        public ExamController(IExamService examService)
+        private readonly IQuestionService _questionService;
+        public ExamController(IExamService examService, IQuestionService questionService)
         {
             _examService = examService;
+            _questionService = questionService;
         }
         // GET: api/<ExamController>
         [HttpGet]
@@ -74,5 +77,30 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
             var result = await _examService.Delete(id);
             return Ok(result);
         }
-    }
+
+        [HttpGet("GetListQuestion/{examId}")]
+        public async Task<IActionResult> GetListQuestion(int examId)
+        {
+            var start = Request.Query["start"].FirstOrDefault();
+            var length = Request.Query["length"].FirstOrDefault();
+            DatatableRequestBase requestBase = new DatatableRequestBase()
+            {
+                Draw = Request.Query["draw"].FirstOrDefault(),
+                Skip = start != null ? Convert.ToInt32(start) : 0,
+                PageSize = length != null ? Convert.ToInt32(length) : 0,
+                sortColumn = Request.Query["order[0][column]"].FirstOrDefault(),
+                sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault(),
+                searchValue = Request.Query["search[value]"].FirstOrDefault()
+            };
+            var result = await _questionService.GetListQuestionByExam(requestBase, examId);
+            return Ok(result);
+        }
+
+        [HttpGet("GetInfoExam/{roomId}")]
+        public async Task<IActionResult> GetInfoExam(int roomId)
+        {
+            var result = await _examService.GetByRoomId(roomId);
+            return Ok(result);
+        }
+     }
 }

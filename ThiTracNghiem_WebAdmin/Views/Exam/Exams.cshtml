@@ -164,7 +164,7 @@
                         targets: 1,
                         data: 'examTitle',
                         render: function (data, type, row) {
-                            var title = '<a href="' + " " + row[0]+ '">' + data + '</a > ';
+                            var title = '<a href="' + "singleExam/" + row.id+ '">' + data + '</a > ';
                             return title;
                         }
                     }
@@ -199,7 +199,6 @@
             url: "https://localhost:5001/api/exam/" + examID,
 
             success: function (data) {
-                console.log(data);
                 $('#exam-title').val(data.resultObject.examTitle);
                 $('#exam-description').val(data.resultObject.examDescription);
                 $('#exam-type').val(data.resultObject.examType);
