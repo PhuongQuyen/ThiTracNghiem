@@ -14,14 +14,26 @@
     <div class="col-lg-12">
         <div class="row">
             <div class="col-md-8">
-                <a href="javascript:void(0)" type="button" id="btn-edit-exam" class="btn btn-primary">
-                    <i class="fa fa-edit"></i> Sửa thông tin đề
-                </a> |
                 <a href="javascript:void(0)" class="btn btn-info" id="btn-add-question"
                    data-id="{{$examInfo->examtype_id}}">
                     <i class="fa fa-plus"></i>
                     Thêm câu hỏi
                 </a>
+                <a href="https://localhost:5002/exam/download" class="btn btn-info">
+                    <i class="fa fa-download"></i>
+                    DownLoad file mẫu
+                </a>
+            </div>
+            <div class="col-md-2">
+                <div class="row ">
+                    <div class="card-header">Import Excel</div>
+                    @*<form id="uploadExcel" name="uploadExcel" action="" method="post" enctype="multipart/form-data">*@
+                        <div class="form-group">
+                            <input type="file" id="myfile" name="myfile" />
+                        </div>
+                        <button type="submit" id="upload" onclick="upload()" class="btn btn-primary">Import</button>
+                    @*</form>*@
+                </div>
             </div>
             <div class="col-md-4">
                 <a href="javascript:void(0)" class="btn btn-danger" style="float:right;"
@@ -579,6 +591,32 @@
                     total_questions = data.resultObject.totalQuestions;
                 },
                 error: function (data) {
+                    console.log('Error: ', data);
+                }
+            });
+        }
+        function upload() {
+        
+            var fileUpload = $("#myfile").get(0);
+            var files = fileUpload.files;
+            var data = new FormData();
+            data.append(files[0].name, files[0]);
+            $.ajax({
+                data: data,
+                type: "post",
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,
+                async: false,
+                url: "https://localhost:5001/api/exam/uploadExcel/" + examID,
+                success: function (data) {
+                    let oTable = $('#questions-table').dataTable();
+                    oTable.fnDraw(false);
+                },
+                error: function (data) {
+                    bootbox.alert({
+                        message: 'Lỗi: <p>' + data.responseJSON + '</p>',
+                        backdrop: true
+                    });
                     console.log('Error: ', data);
                 }
             });

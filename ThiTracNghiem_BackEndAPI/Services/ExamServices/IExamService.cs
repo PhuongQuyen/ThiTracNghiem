@@ -6,6 +6,7 @@ using ThiTracNghiem_ViewModel.Commons;
 using ThiTracNghiem_ViewModel.Exams;
 using ThiTracNghiem_BackEndAPI.Models;
 using ThiTracNghiem_ViewModel.Rooms;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
 {
@@ -18,6 +19,6 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
         Task<ApiResult<string>> Create(ExamViewModel request);
         Task<int> GetExamCount();
         Task<ApiResult<ExamInRoomViewModel>> GetByRoomId(int roomId); //creator
-    
+
     }
 }

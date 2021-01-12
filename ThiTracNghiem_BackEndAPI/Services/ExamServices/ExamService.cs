@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ThiTracNghiem_BackEndAPI.Models;
@@ -13,10 +16,12 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
     {
         private readonly IConfiguration _configuration;
         private readonly tracnghiemContext _context;
-        public ExamService(IConfiguration configuration, tracnghiemContext context)
+        private readonly IFileProvider _fileProvider;
+        public ExamService(IConfiguration configuration, tracnghiemContext context, IFileProvider fileProvider)
         {
             _configuration = configuration;
             _context = context;
+            _fileProvider = fileProvider;
         }
         public async Task<ApiResult<string>> Create(ExamViewModel request)
         {
@@ -183,5 +188,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
             await _context.SaveChangesAsync();
             return new ApiResultSuccess<bool>();
         }
+
+
     }
 }

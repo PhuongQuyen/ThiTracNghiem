@@ -35,6 +35,11 @@ namespace ThiTracNghiem_WebAdmin.Controllers
             ViewBag.ExamId = examId;
             return View();
         }
+        [AllowAnonymous]
+        public IActionResult Download()
+        {
+            return File("/data/QuestionTemplate.xlsx", System.Net.Mime.MediaTypeNames.Application.Octet,"QuestionTemplate.xlsx") ;
+        }
         
     }
 }
