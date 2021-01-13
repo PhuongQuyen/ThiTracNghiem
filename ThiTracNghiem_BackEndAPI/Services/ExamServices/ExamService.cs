@@ -171,7 +171,6 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
             return result;
 
         }
-
         public async Task<ApiResult<bool>> Update(ExamViewModel request, int examId)
         {
             var exam = await _context.Exams.FindAsync(examId);

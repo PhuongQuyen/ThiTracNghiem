@@ -80,6 +80,10 @@ namespace ThiTracNghiem_WebAdmin
                 endpoints.MapControllerRoute(name: "creator",
                     pattern: "creator/examinroom/{roomId?}",
                     defaults: new { controller = "creator", action = "examinroom" });
+
+                endpoints.MapControllerRoute(name: "creator", pattern: "creator/studentinroom/{roomId?}",
+                    defaults: new { controller = "creator", action = "studentinroom" });
+
                 endpoints.MapControllerRoute(name: "exam",
                     pattern: "exam/singleExam/{examId?}",
                     defaults: new { controller = "exam", action = "singleExam" });

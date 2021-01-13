@@ -237,7 +237,7 @@ namespace ThiTracNghiem_BackEndAPI.Models
                 entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasColumnType("int(11)");
-            });
+            }); 
 
             modelBuilder.Entity<Migrations>(entity =>
             {

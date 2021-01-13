@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace ThiTracNghiem_BackEndAPI.Models
+namespace ThiTracNghiem_ViewModel.JoinRoom
 {
-    public partial class Joinroom
+   public class JoinRoomViewModel
     {
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -13,5 +14,6 @@ namespace ThiTracNghiem_BackEndAPI.Models
         public string Mssv { set; get; }
         public string Email { set; get; }
         public string FullName { set; get; }
+
     }
 }

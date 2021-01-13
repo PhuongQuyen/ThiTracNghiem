@@ -19,6 +19,6 @@ namespace ThiTracNghiem_BackEndAPI.Services.ExamServices
         Task<ApiResult<string>> Create(ExamViewModel request);
         Task<int> GetExamCount();
         Task<ApiResult<ExamInRoomViewModel>> GetByRoomId(int roomId); //creator
-
+    
     }
 }

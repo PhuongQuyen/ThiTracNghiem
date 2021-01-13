@@ -146,6 +146,15 @@
                     { data: 'publicRoom' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ],
+                columnDefs: [
+                    {
+                        targets: 6,
+                        render: function (data, type, row, meta) {
+                            var url = "/creator/studentinroom/" + row['id'];
+                            return "<a href='" + url+"'>" + data + "</ a>";
+                        }
+                    }
+                ]
             });
         });
         // Create new exam button

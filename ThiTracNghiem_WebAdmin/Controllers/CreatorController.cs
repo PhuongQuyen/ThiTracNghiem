@@ -25,5 +25,10 @@ namespace ThiTracNghiem_WebAdmin.Controllers
             ViewBag.RoomId = roomId;
             return View();
         }
+        public IActionResult StudentInRoom(int roomId)
+        {
+            ViewBag.RoomId = roomId;
+            return View();
+        }
     }
 }
