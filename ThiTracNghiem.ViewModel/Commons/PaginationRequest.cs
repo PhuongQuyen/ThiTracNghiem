@@ -58,8 +58,8 @@ namespace ThiTracNghiem_ViewModel.Commons
             }
 
             // calculate start and end item indexes
-            var startIndex = (currentPage - 1) * pageSize;
-            var endIndex = Math.Min(startIndex + pageSize - 1, totalItems - 1);
+            var startIndex = (currentPage - 1) * pageSize+1;
+            var endIndex = Math.Min(startIndex + pageSize , totalItems - 1);
 
             // create an array of pages that can be looped over
             //var pages = data.Range(startPage, (endPage + 1) - startPage);
