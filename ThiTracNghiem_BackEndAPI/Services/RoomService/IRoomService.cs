@@ -23,6 +23,6 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
         JoinRoomViewModel JoinRoom(JoinRoomRequest roomRequest);
         Task<PaginationRequest> GetQuestions(int ExamId,int Page);
 
-        Task<JoinRoomViewModel> SubmitExam(int JoinRoomId,int ExamId,String json);
+        Task<ScoreExamViewModel> SubmitExam(int JoinRoomId,int ExamId,String json);
     }
 }

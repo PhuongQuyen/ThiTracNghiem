@@ -387,7 +387,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
             return paginationRequest;
         }
 
-        public async Task<JoinRoomViewModel> SubmitExam(int JoinRoomId, int ExamId, string json)
+        public async Task<ScoreExamViewModel> SubmitExam(int JoinRoomId, int ExamId, string json)
         {
             var query = from jr in _context.Joinroom where jr.Id == JoinRoomId select jr;
             var joinRoom = query.First();
@@ -403,7 +403,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
             Id = x.q.Id,
             QuestionType = x.q.QuestionType,
             CorrectAnswers = x.a.CorrectAnswers
-            }).ToArrayAsync();
+            }).ToListAsync();
 
             var data = JsonSerializer.Deserialize<Dictionary<string,string>>(json);
             int i = 0;
@@ -458,7 +458,13 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
                 UserId = joinRoom.UserId,
                 TimeSubmitExam = DateTime.Now
             };
-            return joinRoomViewModel;
+            ScoreExamViewModel s = new ScoreExamViewModel()
+            {
+                Answers = questions,
+                Joinroom = joinRoomViewModel,
+                Score = score,
+            };
+            return s;
         }
     }
 }
