@@ -146,7 +146,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "https://localhost:5001/api/exam",
+                    url: "http://localhost:5001/api/exam",
                     type: 'GET',
                     "dataSrc": "data",
                 },
@@ -179,7 +179,7 @@
             $('#exam-modal-title').html("Thêm đề thi mới");
             $('#exam-modal').modal('show');
             $('#examForm').attr({
-                action: "https://localhost:5001/api/exam",
+                action: "http://localhost:5001/api/exam",
                 method: "POST"
             });
         });
@@ -189,14 +189,14 @@
             let examID = $(this).data("id");
             $('#exam-modal').modal('show');
             $('#examForm').attr({
-                action: "https://localhost:5001/api/exam/update/" + examID,
+                action: "http://localhost:5001/api/exam/update/" + examID,
                 method: "POST"
                 });
         $('#exam-modal-title').html("Sửa đề thi");
         $('#exam_id').val(examID);
         $.ajax({
             type: "get",
-            url: "https://localhost:5001/api/exam/" + examID,
+            url: "http://localhost:5001/api/exam/" + examID,
 
             success: function (data) {
                 $('#exam-title').val(data.resultObject.examTitle);
@@ -218,7 +218,7 @@
             if (confirm('Bạn có chắc muốn xóa đề thi ' + examID + ' ?') === true)
                 $.ajax({
                     type: "get",
-                    url: "https://localhost:5001/api/exam/delete/" + examID,
+                    url: "http://localhost:5001/api/exam/delete/" + examID,
                     success: function (data) {
                         let oTable = $('#exam-table').dataTable();
                         oTable.fnDraw(false);

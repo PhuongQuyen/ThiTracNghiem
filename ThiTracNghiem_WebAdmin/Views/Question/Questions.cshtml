@@ -156,7 +156,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "https://localhost:5001/api/question/getListQuestion",
+                    url: "http://localhost:5001/api/question/getListQuestion",
                     type: 'GET',
                 },
                 columns: [
@@ -200,7 +200,7 @@
             let questionID = $(this).data("id");
             if (confirm('Bạn muốn xóa câu hỏi ' + questionID + ' ?') === true)
                 $.ajax({
-                    url: "https://localhost:5001/api/question/delete/" + questionID,
+                    url: "http://localhost:5001/api/question/delete/" + questionID,
                     type: "GET",
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
@@ -223,7 +223,7 @@
             $('#question-modal-title').html("Thêm câu hỏi mới");
             $('#question-modal').modal('show');
             $('#questionForm').attr({
-                action: "https://localhost:5001/api/question/create",
+                action: "http://localhost:5001/api/question/create",
                 method: "POST"
             });
         });
@@ -234,14 +234,14 @@
             $('#btn-switch-mass-create').hide();
             $('#question-modal').modal('show');
             $('#questionForm').attr({
-                action: "https://localhost:5001/api/question/update/" + questionID,
+                action: "http://localhost:5001/api/question/update/" + questionID,
                 method: "POST"
             });
             $('#question-modal-title').html("Sửa câu hỏi");
             $('#question_id').val(questionID);
             $.ajax({
                 type: "get",
-                url: "https://localhost:5001/api/question/getbyid/" + questionID,
+                url: "http://localhost:5001/api/question/getbyid/" + questionID,
                 success: function (data) {
                     $('#question-content').val(data.resultObject.questionContent);
                     $('#question-module').val(data.resultObject.moduleId);

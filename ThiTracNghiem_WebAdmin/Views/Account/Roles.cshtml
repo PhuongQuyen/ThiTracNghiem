@@ -96,7 +96,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "https://localhost:5001/api/role/getListRole",
+                    url: "http://localhost:5001/api/role/getListRole",
                     type: 'GET',
                 },
                 columns: [
@@ -115,7 +115,7 @@
             $('#role-modal-title').html("Thêm quyền mới");
             $('#role-modal').modal('show');
             $('#roleForm').attr({
-                action: "http://172.17.0.1:5001/api/role/create",
+                action: "http://localhost:5001/api/role/create",
                 method: "POST"
             });
         });
@@ -126,14 +126,14 @@
             $('#default-password').hide();
             $('#role-modal').modal('show');
             $('#roleForm').attr({
-                action: "http://172.17.0.1:5001/api/role/update/" + roleID,
+                action: "http://localhost:5001/api/role/update/" + roleID,
                 method: "POST"
             });
             $('#role-modal-title').html("Sửa quyền");
             $('#role_id').val(roleID);
             $.ajax({
                 type: "get",
-                url: "http://172.17.0.1:5001/api/role/getById/" + roleID,
+                url: "http://localhost:5001/api/role/getById/" + roleID,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 },
@@ -154,7 +154,7 @@
             if (confirm('Bạn có chắc muốn xóa quyền  ' + roleID + ' ?') === true)
                 $.ajax({
                     type: "get",
-                    url: "http://172.17.0.1:5001/api/role/delete/" + roleID,
+                    url: "http://localhost:5001/api/role/delete/" + roleID,
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     },
