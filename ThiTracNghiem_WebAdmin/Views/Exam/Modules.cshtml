@@ -98,7 +98,11 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
+<<<<<<< HEAD
                     url: 'http://178.128.53.31:5001/api/module/getListModule',
+=======
+                    url: 'https://localhost:5001/api/module/getListModule',
+>>>>>>> parent of 0c698b7 (update endpoint api)
                     type: 'GET',
                 },
                 columns: [
@@ -117,7 +121,11 @@
             $('#module-modal-title').html("Thêm module mới");
             $('#module-modal').modal('show');
             $('#moduleForm').attr({
+<<<<<<< HEAD
                 action: "http://178.128.53.31:5001/api/module/create",
+=======
+                action: "https://localhost:5001/api/module/create",
+>>>>>>> parent of 0c698b7 (update endpoint api)
                 method: "POST"
             });
         });
@@ -127,7 +135,11 @@
             if (confirm('Bạn có chắc muốn xóa phòng thi ' + moduleID + ' ?') === true)
                 $.ajax({
                     type: "get",
+<<<<<<< HEAD
                     url: "http://178.128.53.31:5001/api/module/delete/" + moduleID,
+=======
+                    url: "https://localhost:5001/api/module/delete/" + moduleID,
+>>>>>>> parent of 0c698b7 (update endpoint api)
                     success: function (data) {
                         let oTable = $('#modules-table').dataTable();
                         oTable.fnDraw(false);
@@ -144,12 +156,20 @@
             $('#module-modal-title').html("Sửa thông tin module");
             $('#module_id').val(moduleID);
             $('#moduleForm').attr({
+<<<<<<< HEAD
                 action: "http://178.128.53.31:5001/api/module/update/" + moduleID,
+=======
+                action: "https://localhost:5001/api/module/update/" + moduleID,
+>>>>>>> parent of 0c698b7 (update endpoint api)
                 method: "POST"
             });
             $.ajax({
                 type: "get",
+<<<<<<< HEAD
                 url: 'http://178.128.53.31:5001/api/module/getbyId/' + moduleID,
+=======
+                url: 'https://localhost:5001/api/module/getbyId/' + moduleID,
+>>>>>>> parent of 0c698b7 (update endpoint api)
                 success: function (data) {
                     $('#module-name').val(data.resultObject.moduleName);
                     $('#module-description').val(data.resultObject.moduleDescription)

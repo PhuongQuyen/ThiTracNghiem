@@ -183,7 +183,11 @@
              var token = '@token';
             $.ajax({
                 type: "get",
+<<<<<<< HEAD
                 url: 'http://178.128.53.31:5001/api/dashboard/getInfo',
+=======
+                url: 'https://localhost:5001/api/dashboard/getInfo',
+>>>>>>> parent of 0c698b7 (update endpoint api)
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 },

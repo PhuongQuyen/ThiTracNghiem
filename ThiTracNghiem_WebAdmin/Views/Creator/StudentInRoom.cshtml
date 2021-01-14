@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-8">
                 <a 
-                   @*href="http://178.128.53.31:5001/room/ExportStudent/@ViewBag.RoomId"*@
+                   @*href="https://localhost:5001/room/ExportStudent/@ViewBag.RoomId"*@
                    onclick="dowload()"
                    class="btn btn-info">
                     <i class="fa fa-download"></i>
@@ -277,7 +277,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: 'http://178.128.53.31:5001/api/room/GetStudentsInRoom/' + roomId,
+                    url: 'https://localhost:5001/api/room/GetStudentsInRoom/' + roomId,
                     type: 'GET',
                 },
                 columns: [
@@ -295,7 +295,7 @@
             let questionID = $(this).data('id');
             if (confirm('Xóa câu hỏi ' + questionID + ' ra khỏi đề thi này?') === true) {
                 $.ajax({
-                    url: 'http://178.128.53.31:5001/api/question/delete/' + questionID,
+                    url: 'https://localhost:5001/api/question/delete/' + questionID,
                     type: 'get',
                     success: function (data) {
                         let oTable = $('#questions-table').dataTable();
@@ -313,14 +313,14 @@
             $('#btn-switch-mass-create').hide();
             $('#question-modal').modal('show');
             $('#questionForm').attr({
-                action: "http://178.128.53.31:5001/api/question/update/" + questionID,
+                action: "https://localhost:5001/api/question/update/" + questionID,
                 method: "POST"
             });
             $('#question-modal-title').html("Sửa câu hỏi");
             $('#question_id').val(questionID);
             $.ajax({
                 type: "get",
-                url: "http://178.128.53.31:5001/api/question/getbyid/" + questionID,
+                url: "https://localhost:5001/api/question/getbyid/" + questionID,
                 success: function (data) {
                     $('#question-content').val(data.resultObject.questionContent);
                     $('#question-module').val(data.resultObject.moduleId);
@@ -388,7 +388,7 @@
         //add new question to exam
         $('#btn-add-question').click(function () {
             $.ajax({
-                url: 'http://178.128.53.31:5001/api/question/GetCountQuestion/' + examID,
+                url: 'https://localhost:5001/api/question/GetCountQuestion/' + examID,
                 type: 'get',
                 success: function (data) {
                     if (data >= total_questions) {
@@ -409,7 +409,7 @@
                         $('#question-modal-title').html("Thêm câu hỏi mới");
                         $('#question-modal').modal('show');
                         $('#questionForm').attr({
-                            action: "http://178.128.53.31:5001/api/question/create/",
+                            action: "https://localhost:5001/api/question/create/",
                             method: "POST"
                         });
                     }
@@ -462,14 +462,14 @@
         $('#btn-edit-exam').click(function () {
             $('#exam-modal').modal('show');
             $('#examForm').attr({
-                action: "http://178.128.53.31:5001/api/exam/update/" + examID,
+                action: "https://localhost:5001/api/exam/update/" + examID,
                 method: "POST"
             });
             $('#exam-modal-title').html("Sửa đề thi");
             $('#exam_id').val(examID);
             $.ajax({
                 type: "get",
-                url: "http://178.128.53.31:5001/api/exam/" + examID,
+                url: "https://localhost:5001/api/exam/" + examID,
                 success: function (data) {
 
                     $('#exam-title').val(data.resultObject.examTitle);
@@ -535,7 +535,7 @@
                             return false;
                         }
                         $.ajax({
-                            url: "http://178.128.53.31:5001/api/room/DeleteExamInRoom/" + roomId,
+                            url: "https://localhost:5001/api/room/DeleteExamInRoom/" + roomId,
                             type: 'get',
                             success: function (data) {
                                 bootbox.alert({
@@ -558,7 +558,7 @@
         function getRoomInfo() {
             $.ajax({
                 type: "get",
-                url: "http://178.128.53.31:5001/api/exam/GetInfoExam/" + roomId,
+                url: "https://localhost:5001/api/exam/GetInfoExam/" + roomId,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 },
@@ -584,7 +584,7 @@
             });
         }
         function dowload() {
-            window.location = "http://178.128.53.31:5001/api/room/ExportStudent/" + roomId;
+            window.location = "https://localhost:5001/api/room/ExportStudent/" + roomId;
         }
     </script>
     <!-- DataTables JavaScript -->
