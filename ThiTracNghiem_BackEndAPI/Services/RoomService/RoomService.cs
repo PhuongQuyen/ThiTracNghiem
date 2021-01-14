@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ThiTracNghiem_BackEndAPI.Models;
 using ThiTracNghiem_ViewModel.Commons;
@@ -277,34 +278,187 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
                         join ex in _context.Exams on r.ExamId equals ex.Id
                         where r.RoomCode == roomCode
                         select new { r, ex };
-            var data = query.Select(x => new FindRoomViewModel()
+            try
             {
-                Id = x.r.Id,
-              Description =x.r.Description,
-              ExamId = x.r.ExamId,
-              RoomCode = x.r.RoomCode,
-               RoomName = x.r.RoomName,
-               exam = new ExamViewModel()
-               {
-                   Id = x.ex.Id,
-                   ExamTitle = x.ex.ExamTitle,
-                   ExamDescription = x.ex.ExamDescription,
-                   TimeLimit= x.ex.TimeLimit,
-                   TotalQuestions = x.ex.TotalQuestions,
-                   DateCreated = x.ex.DateCreated
-               }
-            }).First();
+                var data = query.Select(x => new FindRoomViewModel()
+                {
+                    Id = x.r.Id,
+                    Description = x.r.Description,
+                    ExamId = x.r.ExamId,
+                    PublicRoom = x.r.PublicRoom,
+                    RoomCode = x.r.RoomCode,
+                    RoomName = x.r.RoomName,
+                    exam = new ExamViewModel()
+                    {
+                        Id = x.ex.Id,
+                        ExamTitle = x.ex.ExamTitle,
+                        ExamDescription = x.ex.ExamDescription,
+                        TimeLimit = x.ex.TimeLimit,
+                        TotalQuestions = x.ex.TotalQuestions,
+                        DateCreated = x.ex.DateCreated
+                    }
+                }).First();
             return data;
+            }catch(InvalidOperationException e)
+            {
+                return null;
+            }
         }
 
         public JoinRoomViewModel JoinRoom(JoinRoomRequest roomRequest)
         {
-            throw new NotImplementedException();
+            if (roomRequest.RoomId ==0) return null;
+            var query = from r in _context.Rooms
+                        where r.Id == roomRequest.RoomId
+                        select r;
+            try
+            {
+                var room = query.First();
+                if (roomRequest.UserId !=0)
+                {
+                    var joinRoom = new Joinroom()
+                    {
+                        RoomId = roomRequest.RoomId,
+                        UserId = roomRequest.UserId,
+                    };
+                    _context.Joinroom.Add(joinRoom);
+                    _context.SaveChanges();
+                    return new JoinRoomViewModel()
+                    {
+                        Id = joinRoom.Id,
+                        RoomId = joinRoom.RoomId,
+                        UserId = joinRoom.UserId
+                    };
+                }
+                else
+                {
+                    if(roomRequest.FullName.Equals("") || roomRequest.Email.Equals("") || roomRequest.Mssv.Equals(""))
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        var joinRoom = new Joinroom()
+                        {
+                            RoomId = roomRequest.RoomId,
+                            Mssv = roomRequest.Mssv,
+                            Email= roomRequest.Email,
+                            FullName= roomRequest.FullName
+                        };
+                        _context.Joinroom.Add(joinRoom);
+                        _context.SaveChanges();
+                        return new JoinRoomViewModel()
+                        {
+                            Id = joinRoom.Id,
+                            RoomId = roomRequest.RoomId,
+                            Mssv = roomRequest.Mssv,
+                            Email = roomRequest.Email,
+                            FullName = roomRequest.FullName
+                        };
+                    }
+                }
+            }catch(InvalidOperationException e)
+            {
+                return null;
+            }
         }
 
-        public Task<PaginationRequest> GetQuestions(int examId)
+        public async Task<PaginationRequest> GetQuestions(int ExamId,int Page)
         {
-            throw new NotImplementedException();
+            var query = from q in _context.Questions
+                        join qd in _context.Questiondetails on q.Id equals qd.QuestionId
+                        join a in _context.Answers on q.Id equals a.QuestionId
+                        join e in _context.Exams on qd.ExamId equals e.Id
+                        where qd.ExamId == ExamId
+                        orderby q.Id
+                        select new { q, a };
+            int total = await query.CountAsync();
+            PaginationRequest paginationRequest = new PaginationRequest(total, Page);
+            var data = await query.Skip(paginationRequest.From).Take(10).Select(x => new QuestionAndAnswer() {
+                Id = x.q.Id,
+                QuestionContent = x.q.QuestionContent,
+                QuestionType = x.q.QuestionType,
+                A = x.a.A,
+                B= x.a.B,
+                C = x.a.C,
+                D=x.a.D
+            }).ToListAsync() ;
+            paginationRequest.Data = data;
+            return paginationRequest;
+        }
+
+        public async Task<JoinRoomViewModel> SubmitExam(int JoinRoomId, int ExamId, string json)
+        {
+            var query = from jr in _context.Joinroom where jr.Id == JoinRoomId select jr;
+            var joinRoom = query.First();
+            if (joinRoom == null) return null;
+            var queryqs = from q in _context.Questions
+                    join qd in _context.Questiondetails on q.Id equals qd.QuestionId
+                    join a in _context.Answers on q.Id equals a.QuestionId
+                    join e in _context.Exams on qd.ExamId equals e.Id
+                    where qd.ExamId == ExamId
+                    orderby q.Id
+                    select new { q, a };
+            var questions = await queryqs.Select(x=> new QuestionAndAnswer(){
+            Id = x.q.Id,
+            QuestionType = x.q.QuestionType,
+            CorrectAnswers = x.a.CorrectAnswers
+            }).ToArrayAsync();
+
+            var data = JsonSerializer.Deserialize<Dictionary<string,string>>(json);
+            int i = 0;
+            int score = 0;
+            bool flag = true;
+            foreach (var kv in data)
+            {
+                if (questions[i].Id == int.Parse(kv.Key))
+                {
+
+                    if (questions[i].CorrectAnswers.Length == 1)
+                    {
+                        if (questions[i].CorrectAnswers.Equals(kv.Value))
+                        {
+                            score++;
+                        }
+                        i++;
+                        continue;
+                    }
+                    else
+                    {
+                        var arrquestion = questions[i].CorrectAnswers.Split(",");
+                        var arrchose = kv.Value.Split(",");
+                        i++;
+                        if (arrquestion.Length != arrchose.Length) continue;
+                        flag = true;
+                        foreach (var elem in arrchose)
+                        {
+                            if (!arrquestion.Contains(elem))
+                            {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag) score++;
+                    }
+
+
+                }
+            }
+            joinRoom.Score = score;
+            joinRoom.TimeSubmitExam = DateTime.Now;
+            _context.Update(joinRoom);
+            JoinRoomViewModel joinRoomViewModel = new JoinRoomViewModel()
+            {
+                Id = joinRoom.Id,
+                RoomId = joinRoom.RoomId,
+                Score = score,
+                Email = joinRoom.Email,
+                FullName = joinRoom.FullName,
+                Mssv = joinRoom.Mssv,
+                UserId = joinRoom.UserId,
+                TimeSubmitExam = DateTime.Now
+            };
+            return joinRoomViewModel;
         }
     }
 }

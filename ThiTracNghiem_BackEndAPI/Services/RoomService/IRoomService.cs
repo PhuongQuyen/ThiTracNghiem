@@ -21,7 +21,8 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
         Task<List<StudentInExamViewModel>> ExportExcelStudents(int roomId);
         FindRoomViewModel FindRoom(string roomCode);
         JoinRoomViewModel JoinRoom(JoinRoomRequest roomRequest);
-        Task<PaginationRequest> GetQuestions(int examId);
-        
+        Task<PaginationRequest> GetQuestions(int ExamId,int Page);
+
+        Task<JoinRoomViewModel> SubmitExam(int JoinRoomId,int ExamId,String json);
     }
 }

@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThiTracNghiem_BackEndAPI", "ThiTracNghiem_BackEndAPI\ThiTracNghiem_BackEndAPI.csproj", "{BAFD0EBC-2C46-4F16-9939-D08F464B26FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThiTracNghiem_WebAdmin", "ThiTracNghiem_WebAdmin\ThiTracNghiem_WebAdmin.csproj", "{FE7A8DA4-70DF-4E6A-AAE2-19219EE2D6A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThiTracNghiem_WebAdmin", "ThiTracNghiem_WebAdmin\ThiTracNghiem_WebAdmin.csproj", "{FE7A8DA4-70DF-4E6A-AAE2-19219EE2D6A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThiTracNghiem_ViewModel", "ThiTracNghiem.ViewModel\ThiTracNghiem_ViewModel.csproj", "{BB3532EB-ADB1-4B19-813F-5B9F77ED5591}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThiTracNghiem_ViewModel", "ThiTracNghiem.ViewModel\ThiTracNghiem_ViewModel.csproj", "{BB3532EB-ADB1-4B19-813F-5B9F77ED5591}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

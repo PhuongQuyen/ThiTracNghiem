@@ -80,7 +80,6 @@ namespace ThiTracNghiem_BackEndAPI.Controllers
                 sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault(),
                 searchValue = Request.Query["search[value]"].FirstOrDefault()
             };
-
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _userService.GetListUser(requestBase);
             return Ok(result);
