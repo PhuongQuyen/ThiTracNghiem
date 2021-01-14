@@ -66,25 +66,25 @@ namespace ThiTracNghiem_ViewModel.Commons
 
             // update object instance with all pager properties required by the view
             Total = totalItems;
-            Current_Page = currentPage;
-            Per_Page = pageSize;
+            Current_page = currentPage;
+            Per_page = pageSize;
             //TotalPages = totalPages;
-            First_Page_Url = startPage+"";
-            Last_Page = endPage;
+            First_page_url = startPage+"";
+            Last_page = endPage;
             From = startIndex;
             To= endIndex;
             //Data = pages;
         }
 
-        public int Current_Page { set; get; }
+        public int Current_page { set; get; }
         public List<QuestionAndAnswer> Data { get; set; }
-        public string First_Page_Url { set; get; }
+        public string First_page_url { set; get; }
         public int From { set; get; }
-        public int Last_Page { set; get; }
+        public int Last_page { set; get; }
         public string LastPageUrl { set; get; }
         public string NextPageUrl { set; get; }
         public string Path { set; get; }
-        public int Per_Page { set; get; }
+        public int Per_page { set; get; }
         public string PrevPageUrl { set; get; }
         public int To { set; get; }
         public int Total { set; get; }
