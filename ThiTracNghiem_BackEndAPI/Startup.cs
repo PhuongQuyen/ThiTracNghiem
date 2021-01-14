@@ -37,7 +37,7 @@ namespace ThiTracNghiem_BackEndAPI
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("http://178.128.53.31:5001").AllowAnyMethod().AllowAnyHeader();
+                        builder.WithOrigins("http://178.128.53.31:5002").AllowAnyMethod().AllowAnyHeader();
                     });
 
             });
