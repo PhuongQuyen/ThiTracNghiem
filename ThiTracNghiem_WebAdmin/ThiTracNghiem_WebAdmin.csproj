@@ -20,8 +20,4 @@
     <ProjectReference Include="..\ThiTracNghiem.ViewModel\ThiTracNghiem_ViewModel.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="wwwroot\data\QuestionTemplate.xlsx" />
-  </ItemGroup>
-
 </Project>
