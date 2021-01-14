@@ -289,7 +289,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: 'http://172.17.0.1:5001/api/question/GetListQuestionbyromid/' + roomId,
+                    url: 'http://178.128.53.31:5001/api/question/GetListQuestionbyromid/' + roomId,
                     type: 'GET',
                 },
                 columns: [
@@ -307,7 +307,7 @@
             let questionID = $(this).data('id');
             if (confirm('Xóa câu hỏi ' + questionID + ' ra khỏi đề thi này?') === true) {
                 $.ajax({
-                    url: 'http://172.17.0.1:5001/api/question/delete/' + questionID,
+                    url: 'http://178.128.53.31:5001/api/question/delete/' + questionID,
                     type: 'get',
                     success: function (data) {
                         let oTable = $('#questions-table').dataTable();
@@ -325,14 +325,14 @@
             $('#btn-switch-mass-create').hide();
             $('#question-modal').modal('show');
             $('#questionForm').attr({
-                action: "http://172.17.0.1:5001/api/question/update/" + questionID,
+                action: "http://178.128.53.31:5001/api/question/update/" + questionID,
                 method: "POST"
             });
             $('#question-modal-title').html("Sửa câu hỏi");
             $('#question_id').val(questionID);
             $.ajax({
                 type: "get",
-                url: "http://172.17.0.1:5001/api/question/getbyid/" + questionID,
+                url: "http://178.128.53.31:5001/api/question/getbyid/" + questionID,
                 success: function (data) {
                     $('#question-content').val(data.resultObject.questionContent);
                     $('#question-module').val(data.resultObject.moduleId);
@@ -400,7 +400,7 @@
         //add new question to exam
         $('#btn-add-question').click(function () {
             $.ajax({
-                url: 'http://172.17.0.1:5001/api/question/GetCountQuestion/' + examID,
+                url: 'http://178.128.53.31:5001/api/question/GetCountQuestion/' + examID,
                 type: 'get',
                 success: function (data) {
                     if (data >= total_questions) {
@@ -421,7 +421,7 @@
                         $('#question-modal-title').html("Thêm câu hỏi mới");
                         $('#question-modal').modal('show');
                         $('#questionForm').attr({
-                            action: "http://172.17.0.1:5001/api/question/create/",
+                            action: "http://178.128.53.31:5001/api/question/create/",
                             method: "POST"
                         });
                     }
@@ -474,14 +474,14 @@
         $('#btn-edit-exam').click(function () {
             $('#exam-modal').modal('show');
             $('#examForm').attr({
-                action: "http://172.17.0.1:5001/api/exam/update/" + examID,
+                action: "http://178.128.53.31:5001/api/exam/update/" + examID,
                 method: "POST"
             });
             $('#exam-modal-title').html("Sửa đề thi");
             $('#exam_id').val(examID);
             $.ajax({
                 type: "get",
-                url: "http://172.17.0.1:5001/api/exam/" + examID,
+                url: "http://178.128.53.31:5001/api/exam/" + examID,
                 success: function (data) {
 
                     $('#exam-title').val(data.resultObject.examTitle);
@@ -547,7 +547,7 @@
                             return false;
                         }
                         $.ajax({
-                            url: "http://172.17.0.1:5001/api/room/DeleteExamInRoom/" + roomId,
+                            url: "http://178.128.53.31:5001/api/room/DeleteExamInRoom/" + roomId,
                             type: 'get',
                             success: function (data) {
                                 bootbox.alert({
@@ -570,7 +570,7 @@
         function getRoomInfo() {
             $.ajax({
                 type: "get",
-                url: "http://172.17.0.1:5001/api/exam/GetInfoExam/" + roomId,
+                url: "http://178.128.53.31:5001/api/exam/GetInfoExam/" + roomId,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 },
@@ -607,7 +607,7 @@
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,
                 async: false,
-                url: "http://172.17.0.1:5001/api/exam/uploadExcel/" + roomId,
+                url: "http://178.128.53.31:5001/api/exam/uploadExcel/" + roomId,
                 success: function (data) {
                     let oTable = $('#questions-table').dataTable();
                     oTable.fnDraw(false);

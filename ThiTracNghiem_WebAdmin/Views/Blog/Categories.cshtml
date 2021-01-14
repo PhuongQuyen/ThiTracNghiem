@@ -96,7 +96,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: 'http://172.17.0.1:5001/api/categories/getListCategories',
+                    url: 'http://178.128.53.31:5001/api/categories/getListCategories',
                     type: 'GET',
                 },
                 columns: [
@@ -115,7 +115,7 @@
             $('#category-modal-title').html("Thêm danh mục mới");
             $('#category-modal').modal('show');
             $('#categoryForm').attr({
-                action: "http://172.17.0.1:5001/api/categories/create",
+                action: "http://178.128.53.31:5001/api/categories/create",
                 method: "POST"
             });
         });
@@ -127,12 +127,12 @@
             $('#category-modal-title').html("Sửa thông tin danh mục");
             $('#category_id').val(categoryID);
             $('#categoryForm').attr({
-                action: "http://172.17.0.1:5001/api/categories/update/" + categoryID,
+                action: "http://178.128.53.31:5001/api/categories/update/" + categoryID,
                 method: "POST"
             });
             $.ajax({
                 type: "get",
-                url: 'http://172.17.0.1:5001/api/categories/getbyId/' + categoryID,
+                url: 'http://178.128.53.31:5001/api/categories/getbyId/' + categoryID,
                 success: function (data) {
                     $('#category-name').val(data.resultObject.categoryName);
                     $('#category-description').val(data.resultObject.categoryDescription);
@@ -149,7 +149,7 @@
             if (confirm('Bạn có chắc muốn xóa danh mục ' + categoryID + ' ?') === true)
                 $.ajax({
                     type: "get",
-                    url: 'http://172.17.0.1:5001/api/categories/delete/' + categoryID,
+                    url: 'http://178.128.53.31:5001/api/categories/delete/' + categoryID,
                     success: function (data) {
                         let oTable = $('#categories-table').dataTable();
                         oTable.fnDraw(false);

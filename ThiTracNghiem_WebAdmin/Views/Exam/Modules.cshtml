@@ -98,7 +98,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: 'http://172.17.0.1:5001/api/module/getListModule',
+                    url: 'http://178.128.53.31:5001/api/module/getListModule',
                     type: 'GET',
                 },
                 columns: [
@@ -117,7 +117,7 @@
             $('#module-modal-title').html("Thêm module mới");
             $('#module-modal').modal('show');
             $('#moduleForm').attr({
-                action: "http://172.17.0.1:5001/api/module/create",
+                action: "http://178.128.53.31:5001/api/module/create",
                 method: "POST"
             });
         });
@@ -127,7 +127,7 @@
             if (confirm('Bạn có chắc muốn xóa phòng thi ' + moduleID + ' ?') === true)
                 $.ajax({
                     type: "get",
-                    url: "http://172.17.0.1:5001/api/module/delete/" + moduleID,
+                    url: "http://178.128.53.31:5001/api/module/delete/" + moduleID,
                     success: function (data) {
                         let oTable = $('#modules-table').dataTable();
                         oTable.fnDraw(false);
@@ -144,12 +144,12 @@
             $('#module-modal-title').html("Sửa thông tin module");
             $('#module_id').val(moduleID);
             $('#moduleForm').attr({
-                action: "http://172.17.0.1:5001/api/module/update/" + moduleID,
+                action: "http://178.128.53.31:5001/api/module/update/" + moduleID,
                 method: "POST"
             });
             $.ajax({
                 type: "get",
-                url: 'http://172.17.0.1:5001/api/module/getbyId/' + moduleID,
+                url: 'http://178.128.53.31:5001/api/module/getbyId/' + moduleID,
                 success: function (data) {
                     $('#module-name').val(data.resultObject.moduleName);
                     $('#module-description').val(data.resultObject.moduleDescription)

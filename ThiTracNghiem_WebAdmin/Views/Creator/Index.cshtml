@@ -132,7 +132,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "http://172.17.0.1:5001/api/room/getListRoom",
+                    url: "http://178.128.53.31:5001/api/room/getListRoom",
                     type: 'GET',
                 },
                 columns: [
@@ -164,7 +164,7 @@
             $('#exam-modal-title').html("Thêm phòng mới");
             $('#exam-modal').modal('show');
             $('#examForm').attr({
-                action: "http://172.17.0.1:5001/api/room/create",
+                action: "http://178.128.53.31:5001/api/room/create",
                 method: "POST"
             });
         });
@@ -173,7 +173,7 @@
             let examID = $(this).data("id");
             $('#exam-modal').modal('show');
             $('#examForm').attr({
-                action: "http://172.17.0.1:5001/api/room/update/" + examID,
+                action: "http://178.128.53.31:5001/api/room/update/" + examID,
                 method: "POST"
             });
             $('#exam-modal-title').html("Sửa đề thi");
@@ -181,7 +181,7 @@
             var url =
                 $.ajax({
                     type: "get",
-                    url: "http://172.17.0.1:5001/api/room/getbyid/" + examID,
+                    url: "http://178.128.53.31:5001/api/room/getbyid/" + examID,
                     success: function (data) {
                         $('#room-title').val(data.resultObject.roomName);
                         $('#room-description').val(data.resultObject.description);
@@ -200,7 +200,7 @@
             if (confirm('Bạn có chắc muốn xóa phòng thi ' + roomid + ' ?') === true)
                 $.ajax({
                     type: "get",
-                    url: "http://172.17.0.1:5001/api/room/delete/" + roomid,
+                    url: "http://178.128.53.31:5001/api/room/delete/" + roomid,
                     success: function (data) {
                         let oTable = $('#exam-table').dataTable();
                         oTable.fnDraw(false);
