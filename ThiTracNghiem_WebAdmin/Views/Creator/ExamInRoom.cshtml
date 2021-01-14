@@ -596,18 +596,15 @@
             });
         }
         function upload() {
-        
-            var fileUpload = $("#myfile").get(0);
-            var files = fileUpload.files;
-            var data = new FormData();
-            data.append(files[0].name, files[0]);
+            var formData = new FormData();
+            var file = document.getElementById("myfile").files[0];
+            formData.append("file", file);
             $.ajax({
-                data: data,
-                type: "post",
+                url: "http://localhost:5001/api/exam/uploadExcel/" + examID,
+                data: formData,
+                type: "POST",
                 processData: false,  // tell jQuery not to process the data
                 contentType: false,
-                async: false,
-                url: "http://localhost:5001/api/exam/uploadExcel/" + roomId,
                 success: function (data) {
                     let oTable = $('#questions-table').dataTable();
                     oTable.fnDraw(false);
