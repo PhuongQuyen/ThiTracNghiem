@@ -183,7 +183,7 @@
              var token = '@token';
             $.ajax({
                 type: "get",
-                url: 'https://localhost:5001/api/dashboard/getInfo',
+                url: 'http://172.17.0.1:5001/api/dashboard/getInfo',
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 },
