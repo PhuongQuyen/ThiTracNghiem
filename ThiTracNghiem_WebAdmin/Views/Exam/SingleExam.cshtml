@@ -266,7 +266,7 @@
         var examType = "";
         function moduleQuestionsCount() {
             $.ajax({
-                url: 'http://localhost:5001/api/question/GetQuestionModuleByExamId/' + examId,
+                url: 'http://178.128.53.31:5001/api/question/GetQuestionModuleByExamId/' + examId,
                 type: 'get',
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
@@ -296,7 +296,7 @@
         function getExamInfo() {
             $.ajax({
                 type: "get",
-                url: "http://localhost:5001/api/exam/" + examId,
+                url: "http://178.128.53.31:5001/api/exam/" + examId,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 },
@@ -331,7 +331,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: 'http://localhost:5001/api/exam/GetListQuestion/' + examId,
+                    url: 'http://178.128.53.31:5001/api/exam/GetListQuestion/' + examId,
                     type: 'GET',
                 },
                 columns: [
@@ -348,7 +348,7 @@
             let questionID = $(this).data('id');
             if (confirm('Xóa câu hỏi ' + questionID + ' ra khỏi đề thi này?') === true) {
                 $.ajax({
-                    url: "http://localhost:5001/api/question/delete/" + questionID,
+                    url: "http://178.128.53.31:5001/api/question/delete/" + questionID,
                     type: 'get',
                     success: function (data) {
                         let oTable = $('#questions-table').dataTable();
@@ -368,14 +368,14 @@
             $('#btn-switch-mass-create').hide();
             $('#question-modal').modal('show');
             $('#questionForm').attr({
-                action: "http://localhost:5001/api/question/update/" + questionID,
+                action: "http://178.128.53.31:5001/api/question/update/" + questionID,
                 method: "POST"
             });
             $('#question-modal-title').html("Sửa câu hỏi");
             $('#question_id').val(questionID);
             $.ajax({
                 type: "get",
-                url: "http://localhost:5001/api/question/getbyid/" + questionID,
+                url: "http://178.128.53.31:5001/api/question/getbyid/" + questionID,
                 success: function (data) {
                     $('#question-content').val(data.resultObject.questionContent);
                     $('#question-module').val(data.resultObject.moduleId);
@@ -515,7 +515,7 @@
         $('#btn-edit-exam').click(function () {
             $('#exam-modal').modal('show');
             $('#examForm').attr({
-                action: "http://localhost:5001/api/exam/update/" + examId,
+                action: "http://178.128.53.31:5001/api/exam/update/" + examId,
                 method: "POST"
             });
             $('#exam-modal-title').html("Sửa đề thi");
@@ -574,7 +574,7 @@
                             return false;
                         }
                         $.ajax({
-                            url: "http://localhost:5001/api/exam/delete/" + examId,
+                            url: "http://178.128.53.31:5001/api/exam/delete/" + examId,
                             type: 'get',
                             success: function (data) {
                                 bootbox.alert({
@@ -616,7 +616,7 @@
                         if (result) {
                             $('#btn-compose-auto').html('<i class="fa fa-spin fa-spinner"></i> Đang soạn...');
                             $.ajax({
-                                url: "http://localhost:5001/api/exam/randomQuestion/" + examId,
+                                url: "http://178.128.53.31:5001/api/exam/randomQuestion/" + examId,
                                 type: 'post',
                                 success: function (data) {
                                     moduleQuestionsCount();
