@@ -176,7 +176,7 @@
             $('#account-modal-title').html("Thêm tài khoản mới");
             $('#account-modal').modal('show');
             $('#accountForm').attr({
-                action: "https://localhost:5001/api/user/register",
+                action: "http://172.17.0.1:5001/api/user/register",
                 method: "POST"
             });
         });
@@ -187,7 +187,7 @@
             $('#default-password').hide();
             $('#account-modal').modal('show');
             $('#accountForm').attr({
-                action: "https://localhost:5001/api/user/update/" + accountID,
+                action: "http://172.17.0.1:5001/api/user/update/" + accountID,
                 method: "POST"
             });
             $('#account-modal-title').html("Sửa thông tin tài khoản");
@@ -195,7 +195,7 @@
 
             $.ajax({
                 type: "get",
-                url: "https://localhost:5001/api/user/getById/" + accountID,
+                url: "http://172.17.0.1:5001/api/user/getById/" + accountID,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 },
@@ -221,7 +221,7 @@
             if (confirm('Bạn có chắc muốn xóa tài khoản ' + accountID + ' ?') === true)
                 $.ajax({
                     type: "get",
-                    url: "https://localhost:5001/api/user/delete/" + accountID,
+                    url: "http://172.17.0.1:5001/api/user/delete/" + accountID,
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     },
