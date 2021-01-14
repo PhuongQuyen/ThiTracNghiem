@@ -374,7 +374,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
                         select new { q, a };
             int total = await query.CountAsync();
             PaginationRequest paginationRequest = new PaginationRequest(total, Page);
-            var data = await query.Skip(paginationRequest.From).Take(10).Select(x => new QuestionAndAnswer() {
+            var data = await query.Skip(paginationRequest.From-1).Take(10).Select(x => new QuestionAndAnswer() {
                 Id = x.q.Id,
                 QuestionContent = x.q.QuestionContent,
                 QuestionType = x.q.QuestionType,
