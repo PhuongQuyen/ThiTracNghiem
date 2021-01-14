@@ -59,32 +59,32 @@ namespace ThiTracNghiem_ViewModel.Commons
 
             // calculate start and end item indexes
             var startIndex = (currentPage - 1) * pageSize+1;
-            var endIndex = Math.Min(startIndex + pageSize , totalItems - 1);
+            var endIndex = Math.Min(startIndex + pageSize -1, totalItems - 1);
 
             // create an array of pages that can be looped over
             //var pages = data.Range(startPage, (endPage + 1) - startPage);
 
             // update object instance with all pager properties required by the view
             Total = totalItems;
-            CurrentPage = currentPage;
-            PerPage = pageSize;
+            Current_Page = currentPage;
+            Per_Page = pageSize;
             //TotalPages = totalPages;
-            FirstPageUrl = startPage+"";
-            LastPage = endPage;
+            First_Page_Url = startPage+"";
+            Last_Page = endPage;
             From = startIndex;
             To= endIndex;
             //Data = pages;
         }
 
-        public int CurrentPage { set; get; }
+        public int Current_Page { set; get; }
         public List<QuestionAndAnswer> Data { get; set; }
-        public string FirstPageUrl { set; get; }
+        public string First_Page_Url { set; get; }
         public int From { set; get; }
-        public int LastPage { set; get; }
+        public int Last_Page { set; get; }
         public string LastPageUrl { set; get; }
         public string NextPageUrl { set; get; }
         public string Path { set; get; }
-        public int PerPage { set; get; }
+        public int Per_Page { set; get; }
         public string PrevPageUrl { set; get; }
         public int To { set; get; }
         public int Total { set; get; }
