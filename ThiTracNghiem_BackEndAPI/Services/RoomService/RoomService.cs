@@ -316,11 +316,19 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
                 var room = query.First();
                 if (roomRequest.UserId !=0)
                 {
+                    var userqr = from u in _context.Users where u.Id == roomRequest.UserId select u;
+                    var user = userqr.First();
                     var joinRoom = new Joinroom()
                     {
                         RoomId = roomRequest.RoomId,
                         UserId = roomRequest.UserId,
+                       
                     };
+                    if (user != null)
+                    {
+                        joinRoom.Email = user.Email;
+                        joinRoom.FullName = user.FirstName + user.LastName;
+                    }
                     _context.Joinroom.Add(joinRoom);
                     _context.SaveChanges();
                     return new JoinRoomViewModel()
@@ -446,7 +454,7 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
             }
             joinRoom.Score = score;
             joinRoom.TimeSubmitExam = DateTime.Now;
-            _context.Update(joinRoom);
+            _context.SaveChanges();
             JoinRoomViewModel joinRoomViewModel = new JoinRoomViewModel()
             {
                 Id = joinRoom.Id,
