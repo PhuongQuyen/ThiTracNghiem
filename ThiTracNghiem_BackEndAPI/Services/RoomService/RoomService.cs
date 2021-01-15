@@ -109,10 +109,32 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
 
         public async Task<DatatableResult<List<RoomViewModel>>> GetListRoom(DatatableRequestBase request)
         {
-            var query = from r in _context.Rooms
+            var query = 
+                        from r in _context.Rooms
                         join e in _context.Exams on r.ExamId equals e.Id
                         select new { r, e };
 
+            var userCount = from jr in _context.Joinroom
+                            group jr by jr.RoomId into r
+                            select new
+                            {
+                                roomId = r.Key,
+                                userCount = r.Count()
+                            };
+
+            var examCount = from qd in _context.Questiondetails
+                            group qd by qd.ExamId into r
+                            select new
+                            {
+                                examId = r.Key,
+                                questionCount = r.Count()
+                            };
+
+            var collect = from d in query
+                         join u in userCount on d.r.Id equals u.roomId
+                         join e in examCount on d.e.Id equals e.examId
+                         select new { d, u ,e };
+         
             if (!String.IsNullOrEmpty(request.searchValue))
             {
                 query = query.Where(x => x.r.RoomName.Contains(request.searchValue));
@@ -146,21 +168,21 @@ namespace ThiTracNghiem_BackEndAPI.Services.RoomService
                 }
 
             }
+           
 
-            var data = await query.Skip(request.Skip).Take(request.PageSize)
+            var data = await collect.Skip(request.Skip).Take(request.PageSize)
                   .Select(x => new RoomViewModel()
                   {
-                      Id = x.r.Id,
-                      RoomCode = x.r.RoomCode,
-                      RoomName = String.Format("<a href='/creator/examinroom/{0}'>{1}</ a>",x.r.Id, x.r.RoomName),
-                      TotalQuestions = x.e.TotalQuestions,
-                      TimeLimit = x.e.TimeLimit,
-                      PublicRoom = x.r.PublicRoom,
-                      CurrentQuestions = 20,//2 cái nè chưa truy vấn ra đc em xem viết đc thì viết
-                      UserCounts = 20,
-                      Action = String.Format("<a href = 'javascript:void(0)' data-toggle = 'tooltip' id = 'edit' data-id = '{0}' data-original-title='Edit' class='btn mr-5 btn-xs btn-warning btn-edit'><i class='glyphicon glyphicon-edit'></i> Sửa</a><a href = 'javascript:void(0)' data-toggle='tooltip' id='delete' data-id='{1}' data-original-title='Delete' class='btn btn-xs btn-danger btn-delete'><i class='glyphicon glyphicon-trash'></i> Xóa</a>", x.r.Id, x.r.Id)
-                  }
-                  ).ToListAsync();
+                      Id = x.d.r.Id,
+                      RoomCode = x.d.r.RoomCode,
+                      RoomName = String.Format("<a href='/creator/examinroom/{0}'>{1}</ a>",x.d.r.Id, x.d.r.RoomName),
+                      TotalQuestions = x.d.e.TotalQuestions,
+                      TimeLimit = x.d.e.TimeLimit,
+                      PublicRoom = x.d.r.PublicRoom,
+                      CurrentQuestions = x.e.questionCount,
+                      UserCounts = x.u.userCount,
+                      Action = String.Format("<a href = 'javascript:void(0)' data-toggle = 'tooltip' id = 'edit' data-id = '{0}' data-original-title='Edit' class='btn mr-5 btn-xs btn-warning btn-edit'><i class='glyphicon glyphicon-edit'></i> Sửa</a><a href = 'javascript:void(0)' data-toggle='tooltip' id='delete' data-id='{1}' data-original-title='Delete' class='btn btn-xs btn-danger btn-delete'><i class='glyphicon glyphicon-trash'></i> Xóa</a>", x.d.r.Id, x.d.r.Id)
+                  }).ToListAsync();
 
             var result = new DatatableResult<List<RoomViewModel>>()
             {
